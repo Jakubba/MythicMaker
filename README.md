@@ -7,7 +7,28 @@ Users can edit their character's stats, such as health points, strength, dexteri
 The website also provides a view of the character's current equipment, allowing for better character management.
 
 How install on your computer: 
-1. Download all pack with files
-2. Open project on your computer 
-3. Open terminal and install packages use "yarn install"
-4. Play
+1. Download the entire project/package:
+
+   - Obtain the project files from the source (e.g., GitHub, email, shared link).
+   - Download the ZIP or clone the repository if it's hosted online (e.g., GitHub):
+     + To clone: Open your terminal and run:
+       git clone https://github.com/your-repo/project.git
+     + Alternatively, if you download it as a ZIP, extract the contents to a directory of your choice.
+2.Open the project on your computer:
+
+   - Navigate to the folder where the project is located. You can use a code editor like VSCode, Sublime Text, or WebStorm.
+     + If using VSCode:
+            -Right-click on the project folder and select Open with Code or launch VSCode and open the project using the File > Open Folder menu.
+3.Open the terminal and install the required packages:
+    - Open the terminal in your code editor or directly from your computer. If you're using VSCode, you can press Ctrl + ` to open the terminal within the editor.
+    - Navigate to the project directory if not already there:
+             cd /path/to/your/project
+    - Run the following command to install all necessary packages using yarn:
+             yarn install
+
+4. Run/Play the project:
+   - After the installation is complete, you can start or "play" the project by running:
+     yarn start or yarn dev
+     
+If you don't have yarn installed yet, you can install it using npm (which comes with Node.js):
+     npm install --global yarn
