@@ -12,7 +12,7 @@ How install on your computer:
    - Obtain the project files from the source (e.g., GitHub, email, shared link).
    - Download the ZIP or clone the repository if it's hosted online (e.g., GitHub):
      + To clone: Open your terminal and run:
-       git clone https://github.com/your-repo/project.git
+       git clone https://github.com/Jakubba/MythicMaker.git
      + Alternatively, if you download it as a ZIP, extract the contents to a directory of your choice.
 2.Open the project on your computer:
 
