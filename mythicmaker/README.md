@@ -1,50 +1,45 @@
-# React + TypeScript + Vite
+# MythicMaker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
 
-Currently, two official plugins are available:
+MythicMaker is a website designed for RPG (role-playing game) enthusiasts who enjoy creating characters. The site allows users to create accounts where they can design and manage their characters. Each character profile includes detailed information such as name, race, biography, appearance, and a picture (uploaded by the user or selected from a database).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Users can edit their character's stats, such as health points, strength, dexterity, constitution, intelligence, wisdom, and charisma. There’s also an option to add experience points – once a certain threshold is reached, the player receives a notification about the opportunity to upgrade one of the character's attributes.
 
-## Expanding the ESLint configuration
+The website also provides a view of the character's current equipment, allowing for better character management.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## How install on your computer:
 
-- Configure the top-level `parserOptions` property like this:
+1. Download the entire project/package:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+   - Obtain the project files from the source (e.g., GitHub, email, shared link).
+   - Download the ZIP or clone the repository if it's hosted online (e.g., GitHub): + To clone: Open your terminal and run:
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+   ```bash
+      git clone https://github.com/Jakubba/MythicMaker
+      cd mythicmaker
+   ```
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+   - Alternatively, if you download it as a ZIP, extract the contents to a directory of your choice.
+     2.Open the project on your computer:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+   * Navigate to the folder where the project is located. You can use a code editor like VSCode, Sublime Text, or WebStorm. + If using VSCode:
+     -Right-click on the project folder and select Open with Code or launch VSCode and open the project using the File > Open Folder menu.
+     3.Open the terminal and install the required packages:
+   * Open the terminal in your code editor or directly from your computer. If you're using VSCode, you can press Ctrl + ` to open the terminal within the editor.
+   * Navigate to the project directory if not already there:
+     cd /path/to/your/project
+   * Run the following command to install all necessary packages using yarn:
+     ```bash
+      yarn install
+     ```
+
+2. Run/Play the project:
+   - After the installation is complete, you can start or "play" the project by running:
+     yarn start or yarn dev
+
+If you don't have yarn installed yet, you can install it using npm (which comes with Node.js):
+
+```bash
+   npm install --global yarn
 ```

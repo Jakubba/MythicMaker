@@ -1,0 +1,72 @@
+/* Zintegrowany Reset CSS */
+
+/* Box-sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box; /* 1 */
+}
+
+/* Resetowanie marginesów i wypełnień */
+* {
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/* Stylizacja ciała dokumentu */
+body {
+  line-height: 1.5; /* 4 */
+  -webkit-font-smoothing: antialiased; /* 5 */
+}
+
+/* Ustawienia dla elementów multimedialnych */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block; /* 6 */
+  max-width: 100%; /* 7 */
+}
+
+/* Ustawienia dla formularzy */
+input,
+button,
+textarea,
+select {
+  font: inherit; /* 8 */
+}
+
+/* Stylizacja nagłówków i paragrafów */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word; /* 9 */
+}
+
+/* Izolacja kontenerów */
+#root,
+#__next {
+  isolation: isolate; /* 10 */
+}
+
+/* Reset dla elementów typu hr, pre i legend */
+hr {
+  height: 0;
+  color: inherit;
+  border: 0;
+  border-top: 1px solid; /* 11 */
+}
+
+pre {
+  font-family: monospace, monospace;
+  font-size: 1em; /* 12 */
+}
+
+legend {
+  padding: 0; /* 13 */
+}
