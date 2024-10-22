@@ -1,0 +1,3 @@
+# Ignorowanie folderu build lub dist
+build
+dist
