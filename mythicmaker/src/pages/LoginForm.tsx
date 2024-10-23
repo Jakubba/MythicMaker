@@ -1,42 +1,97 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import icon1 from '../assets/icons/icon-1.png';
+import icon2 from '../assets/icons/icon-2.png';
+import icon3 from '../assets/icons/icon-3.png';
 
-// Definiujemy komponent
 const LoginForm: React.FC = () => {
+  const navigate = useNavigate(); 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isRobot, setIsRobot] = useState(false);
+  const [errors, setErrors] = useState({ username: '', password: '', general: '' });
+
+  const validateForm = () => {
+    let newErrors = { username: '', password: '' };
+    let valid = true;
+
+    if (username.trim() === '') {
+      newErrors.username = 'Nazwa użytkownika jest wymagana'; 
+      valid = false;
+    } else if (username.length < 3) {
+      newErrors.username = 'Nazwa użytkownika musi mieć co najmniej 3 znaki'; 
+      valid = false;
+    }
+
+    if (password.trim() === '') {
+      newErrors.password = 'Hasło jest wymagane'; 
+      valid = false;
+    } else if (password.length < 6) {
+      newErrors.password = 'Hasło musi mieć co najmniej 6 znaków'; 
+      valid = false;
+    } else if (!/[A-Z]/.test(password)) {
+      newErrors.password = 'Hasło musi zawierać co najmniej jedną dużą literę'; 
+      valid = false;
+    } else if (!/[0-9]/.test(password)) {
+      newErrors.password = 'Hasło musi zawierać co najmniej jedną cyfrę'; 
+      valid = false;
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      newErrors.password = 'Hasło musi zawierać co najmniej jeden znak specjalny'; 
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid; 
+  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log('Submitting:', { username, password, isRobot });
+    
+    if (validateForm()) {
+      if (isRobot) {
+        console.log('Wysyłanie:', { username, password, isRobot });
+        navigate('/registration'); 
+      } else {
+        setErrors((prev) => ({ ...prev, general: 'Musisz zaznaczyć, że nie jesteś robotem' }));
+      }
+    }
   };
 
   return (
     <div className='flex flex-col items-center w-full h-screen'>
       <div className='flex w-full min-h-[60vh] relative'>
-        <img className='absolute object-cover w-full h-full top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]' src="/src/assets/image/background-home.png" alt="Background"></img>
-        <div className="relative z-10 flex flex-col items-center justify-center m-auto rounded-md p-7 w-m-auto wh-auto w- login-form customGlass">
-        <h2 className="text-2xl font-bold text-center text-white login-form__title">Logowanie</h2>
-          <form onSubmit={handleSubmit} className="flex flex-col w-full max-w-sm mt-8">
+        <img 
+          className='absolute object-cover w-full h-full top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]' 
+          src="/src/assets/image/background-home.png" 
+          alt="Tło"
+        />
+        <div className="relative z-10 flex flex-col items-center justify-center w-auto m-auto rounded-md p-7 login-form customGlass">
+          <h2 className="text-2xl font-bold text-center text-white">Logowanie</h2>
+          <form onSubmit={handleSubmit} className="flex flex-col w-full max-w-sm">
             <label htmlFor="username" className='block mt-4 mb-2 text-sm font-bold text-white'>Login</label>
             <input
               type="text"
+              id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Name, Surname or Login"
+              placeholder="Imię, Nazwisko lub Login"
               required
-              className="p-2 mb-5 border rounded-md border-secondaryColor focus:outline-none focus:ring-2 focus:ring-fourthColor min-w-[300px]"
+              className={`p-2 mb-1 border rounded-md ${errors.username ? 'border-red-500' : 'border-secondaryColor'} focus:outline-none focus:ring-2 focus:ring-fourthColor min-w-[300px]`}
             />
-            <label htmlFor="password" className='block mt-4 mb-2 text-sm font-bold text-white'>Password</label>
+            {errors.username && <span className="p-2 text-sm text-red-500 w-max bg-slate-50 rounded-xl">{errors.username}</span>}
+            <label htmlFor="password" className='block mt-4 mb-2 text-sm font-bold text-white'>Hasło</label>
             <input
               type="password"
+              id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
+              placeholder="Hasło"
               required
-              className="p-2 mb-5 border rounded-md border-secondaryColor focus:outline-none focus:ring-2 focus:ring-fourthColor min-w-[300px]"
+              className={`p-2 mb-1 border rounded-md ${errors.password ? 'border-red-500' : 'border-secondaryColor'} focus:outline-none focus:ring-2 focus:ring-fourthColor min-w-[300px]`}
             />
-            <div className="flex items-center mb-4 login-form__robot-check">
+            {errors.password && <span className="p-2 text-sm text-red-500 w-max bg-slate-50 rounded-xl">{errors.password}</span>}
+            {errors.general && <span className="p-2 text-sm text-red-500 w-max bg-slate-50 rounded-xl">{errors.general}</span>}
+            <div className="flex items-center mb-4">
               <input
                 type="checkbox"
                 checked={isRobot}
@@ -45,11 +100,14 @@ const LoginForm: React.FC = () => {
                 required
                 className="login-form__checkbox"
               />
-              <label htmlFor="not_robot" className="ml-2 text-sm font-medium text-white cursor-pointer login-form__label">
-                I'm not a robot
+              <label htmlFor="not_robot" className="ml-2 text-sm font-medium text-white cursor-pointer">
+                Nie jestem robotem
               </label>
             </div>
-            <button type="submit" className="px-4 py-2 mt-4 font-semibold text-white rounded-lg bg-thirdColor hover:bg-fourthColor focus:outline-none focus:ring-2 focus:bg-fourthColor focus:outline-fourthColor ">
+            <button 
+              type="submit" 
+              className="px-4 py-2 mt-4 font-semibold text-white rounded-lg bg-thirdColor hover:bg-fourthColor focus:outline-none focus:ring-2 focus:bg-fourthColor"
+            >
               Dalej
             </button>
           </form>
@@ -58,19 +116,25 @@ const LoginForm: React.FC = () => {
       <div className='relative flex w-full h-max'>
         <div className='absolute w-[80%] h-[40px] top-[-25px] left-1/2 translate-x-[-50%] bg-white z-10 rounded-2xl'></div>
         <div className='flex items-center justify-center flex-col w-full md:w-1/3 min-h-[300px] h-full p-8 bg-primaryColor'>
-          <img className='h-[100px] w-[100px] object-contain' src="./../assets/icons/icon-2.png" alt="" />
-          <h3 className='mb-4 text-xl font-tertiaryFont'>Create and Manage Characters</h3>
-          <p className='text-base font-tertiaryFont'>At MythicMaker, you can easily create accounts and design your unique characters for RPGs. Each profile includes all the necessary information, such as name, race, backstory, appearance, and photo. With an intuitive interface, you can easily edit and customize your character details.</p>
+          <img className='h-[80px] w-[80px] object-contain mb-5' src={icon2} alt="Ikona do tworzenia i zarządzania postaciami" />
+          <h3 className='mb-4 text-xl font-tertiaryFont'>Twórz i zarządzaj postaciami</h3>
+          <p className='text-base font-tertiaryFont'>
+            W MythicMaker możesz łatwo tworzyć konta i projektować swoje unikalne postacie do RPG. Każdy profil zawiera wszystkie niezbędne informacje, takie jak imię, rasa, historia, wygląd i zdjęcie.
+          </p>
         </div>
-        <div className='flex items-center justify-center flex-col w-full  md:w-1/3 min-h-[300px] h-full p-8 bg-thirdColor '>
-          <img className='h-[100px] w-[100px] object-contain' src="./../assets/icons/icon-3.png" alt="icon3" />
-          <h3 className='mb-4 text-xl font-tertiaryFont'>Develop Your Skills</h3>
-          <p className='text-base font-tertiaryFont' >As you play, you earn experience that allows your character to grow. MythicMaker enables you to add experience points and modify stats such as strength, agility, and intelligence. Receive notifications about the opportunity to enhance your character’s abilities and tailor them to your play style.</p>
+        <div className='flex items-center justify-center flex-col w-full md:w-1/3 min-h-[300px] h-full p-8 bg-thirdColor'>
+          <img className='h-[80px] w-[80px] object-contain mb-5' src={icon3} alt="Ikona do rozwijania umiejętności" />
+          <h3 className='mb-4 text-xl font-tertiaryFont'>Rozwijaj swoje umiejętności</h3>
+          <p className='text-base font-tertiaryFont'>
+            W miarę grania zdobywasz doświadczenie, które pozwala twojej postaci rosnąć. MythicMaker umożliwia dodawanie punktów doświadczenia i modyfikowanie statystyk, takich jak siła, zręczność i inteligencja.
+          </p>
         </div>
         <div className='flex items-center justify-center flex-col w-full md:w-1/3 min-h-[300px] h-full p-8 bg-secondaryColor'>
-          <img className='h-[100px] w-[100px] object-contain' src="./../assets/icons/icon-1.png" alt="" />
-          <h3 className='mb-4 text-xl font-tertiaryFont'>Manage Your Equipment</h3>
-          <p className='text-base font-tertiaryFont'>Gain full insight into the gear your character is equipped with. MythicMaker allows you to view and edit your inventory, making it easier to strategize and manage your character. This way, you can be sure that your character is always ready for new adventures.</p>
+          <img className='h-[80px] w-[80px] object-contain mb-5' src={icon1} alt="Ikona do zarządzania ekwipunkiem" />
+          <h3 className='mb-4 text-xl font-tertiaryFont'>Zarządzaj swoim ekwipunkiem</h3>
+          <p className='text-base font-tertiaryFont'>
+            Zyskaj pełny wgląd w sprzęt, który twoja postać ma na sobie. MythicMaker pozwala ci przeglądać i edytować swój ekwipunek, co ułatwia strategizowanie i zarządzanie postacią.
+          </p>
         </div>
       </div>
     </div>

@@ -1,14 +1,15 @@
 import React from 'react';
-import './App.css';
-import './styles/main.scss';
-import LoginForm from './pages/LoginForm';
+import { Routes, Route } from 'react-router-dom';
+import LoginForm from './pages/LoginForm'; 
+import Registration from './pages/Registration'; 
 
-function App() {
+const App: React.FC = () => {
   return (
-    <>
-      <LoginForm />
-    </>
+    <Routes>
+      <Route path="/" element={<LoginForm />} />
+      <Route path="/registration" element={<Registration />} />
+    </Routes>
   );
-}
+};
 
 export default App;
