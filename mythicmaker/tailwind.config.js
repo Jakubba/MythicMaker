@@ -4,10 +4,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primaryColor: '#eeac89',
-        secondaryColor: '#b0585d',
-        thirdColor: '#9b3063',
-        fourthColor: '#691e3b',
+        primaryColor: '#1a3c2c',
+        secondaryColor: '#45352b',
+        thirdColor: '#807558',
+        fourthColor: '#363123',
       },
       fontFamily: {
         primaryFont: ['Cinzel Decorative', 'serif'],
@@ -18,7 +18,7 @@ module.exports = {
         bgHome: "url('/src/assets/image/background-home.png')",
       },
       screens: {
-        'md': '768px',
+        md: '768px',
       },
     },
   },
