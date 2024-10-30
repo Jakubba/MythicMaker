@@ -6,7 +6,6 @@ const Character = () => {
 
   const handleLogout = () => {
     logout();
-    auth.signOut();
   };
 
   return (

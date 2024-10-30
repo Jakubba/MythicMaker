@@ -6,11 +6,11 @@ import { useAuth } from './../AuthProvider';
 const ProtectedRoute = ({ component: Component, restricted, ...rest }) => {
   const { currentUser } = useAuth();
 
-  return currentUser && restricted ? (
-    <Navigate to="/character" />
-  ) : (
-    <Component {...rest} />
-  );
+  if (restricted && !currentUser) {
+    return <Navigate to="/login" />;
+  }
+
+  return <Component {...rest} />;
 };
 
 export default ProtectedRoute;
