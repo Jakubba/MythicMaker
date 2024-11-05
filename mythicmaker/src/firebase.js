@@ -22,3 +22,6 @@ const analytics = getAnalytics(app);
 // Initialize Firestore and Auth
 const db = getFirestore(app);
 const auth = getAuth(app);
+
+// Export the initialized variables
+export { auth, db }; // Export auth and db to use in other modules
