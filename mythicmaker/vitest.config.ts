@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue'; // Use this line if you are using Vue
+import react from '@vitejs/plugin-vue'; // Use this line if you are using Vue
 // import react from '@vitejs/plugin-react'; // Uncomment this line if you are using React
 
 export default defineConfig({
