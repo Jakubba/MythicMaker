@@ -1,8 +1,8 @@
-// Registration.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../../firebase';
+import { auth, db } from '../../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
 import { Formik, Form } from 'formik';
 import validationSchema from '../../pages/LoginForm/schema';
 import InputField from '../../components/InputField';
@@ -11,6 +11,7 @@ import CheckField from '../../components/CheckField';
 import bgRegistration from '../../assets/image/registration.png';
 import RedirectIfAuthenticated from '../../components/RedirectIfAuthenticated';
 import InfoPage from '../../blocks/InfoPage';
+
 const initialValues = {
   username: '',
   password: '',
@@ -22,18 +23,40 @@ const Registration = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
-    const { username, password } = values;
+    const { username, password, confirmPassword, notRobot } = values;
+
+    if (password !== confirmPassword) {
+      alert('Hasła nie są zgodne.');
+      return;
+    }
+
+    if (!notRobot) {
+      alert('Potwierdź, że nie jesteś robotem.');
+      return;
+    }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         username,
         password,
       );
-      console.log('Registered:', userCredential.user);
+      const user = userCredential.user;
+      await setDoc(doc(db, 'users', user.uid), {
+        email: username,
+        createdAt: new Date(),
+      });
+
       navigate('/character');
     } catch (error) {
-      console.error('Registration failed', error);
-      alert('Registration failed. Please check your details.');
+      if (error.code === 'auth/email-already-in-use') {
+        alert(
+          'Podany adres e-mail jest już zajęty. Spróbuj zalogować się lub użyj innego adresu.',
+        );
+      } else {
+        console.error('Rejestracja nie powiodła się', error);
+        alert('Rejestracja nie powiodła się. Sprawdź swoje dane.');
+      }
     }
   };
 
