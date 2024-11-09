@@ -1,9 +1,9 @@
+// src/components/Registration.tsx
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth, db } from '../../firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { setDoc, doc } from 'firebase/firestore';
 import { Formik, Form } from 'formik';
+import { toast } from 'react-toastify';
 import validationSchema from '../../pages/LoginForm/schema';
 import InputField from '../../components/InputField';
 import InputError from '../../components/InputError';
@@ -11,6 +11,8 @@ import CheckField from '../../components/CheckField';
 import bgRegistration from '../../assets/image/registration.png';
 import RedirectIfAuthenticated from '../../components/RedirectIfAuthenticated';
 import InfoPage from '../../blocks/InfoPage';
+import { createUser } from '../../services/createUser';
+import { getErrorMessage } from '../../helpers/errorMessages';
 
 const initialValues = {
   username: '',
@@ -23,40 +25,14 @@ const Registration = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
-    const { username, password, confirmPassword, notRobot } = values;
-
-    if (password !== confirmPassword) {
-      alert('Hasła nie są zgodne.');
-      return;
-    }
-
-    if (!notRobot) {
-      alert('Potwierdź, że nie jesteś robotem.');
-      return;
-    }
+    const { username, password } = values;
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        username,
-        password,
-      );
-      const user = userCredential.user;
-      await setDoc(doc(db, 'users', user.uid), {
-        email: username,
-        createdAt: new Date(),
-      });
-
+      await createUser({ email: username, password });
       navigate('/character');
     } catch (error) {
-      if (error.code === 'auth/email-already-in-use') {
-        alert(
-          'Podany adres e-mail jest już zajęty. Spróbuj zalogować się lub użyj innego adresu.',
-        );
-      } else {
-        console.error('Rejestracja nie powiodła się', error);
-        alert('Rejestracja nie powiodła się. Sprawdź swoje dane.');
-      }
+      const errorMessage = getErrorMessage(error.code);
+      toast.error(errorMessage); // Display error message as a toast notification
     }
   };
 
