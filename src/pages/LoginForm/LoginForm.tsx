@@ -1,11 +1,12 @@
 // LoginForm.js
 import React from 'react';
+import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Formik, Form } from 'formik';
 import validationSchema from '../../pages/LoginForm/schema';
-import FeatureCard from '../../components/FieldCard';
 import InputField from '../../components/InputField';
 import InputError from '../../components/InputError';
 import CheckField from '../../components/CheckField';
@@ -20,6 +21,14 @@ const initialValues = {
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate('/character');
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
 
   const handleSubmit = async (values) => {
     const { username, password } = values;
@@ -29,7 +38,6 @@ const LoginForm = () => {
         username,
         password,
       );
-      console.log('Zalogowano:', userCredential.user);
       navigate('/character');
     } catch (error) {
       console.error('Logowanie nie powiodło się', error);
