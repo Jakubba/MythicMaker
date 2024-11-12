@@ -3,17 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from './../AuthProvider';
 import { db } from './../firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-import charakter from './../assets/image/charakter.png';
+import Weapons from '../components/Weapons';
+import Equipment from '../components/Equipment';
+import Wizards from '../components/Wizards';
 import plus from './../assets/icons/icon-plus.png';
 import minus from './../assets/icons/icon-minus.png';
-import weapon from './../assets/image/wapons/pngegg.png';
-import shield from './../assets/image/wapons/shield.png';
 import wizard1 from './../assets/image/zaklecia/wizards1.png';
 import wizard2 from './../assets/image/zaklecia/wiazard2.png';
 import torches from './../assets/image/ekwipunek/torches.png';
 
 const Character = () => {
   const { logout, currentUser } = useAuth();
+  const [showPop, setShowPop] = useState(false);
   const navigate = useNavigate();
 
   const [characterData, setCharacterData] = useState({
@@ -34,6 +35,7 @@ const Character = () => {
 
   const [activeTab, setActiveTab] = useState('description');
   const [personalTab, setPersonalTab] = useState('description');
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     const loadCharacterData = async () => {
@@ -87,7 +89,14 @@ const Character = () => {
       [stat]: Math.max(prevData[stat] + delta, 0),
     }));
   };
-
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setImage(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
   const tabs = [
     { id: 'description', label: 'Opis' },
     { id: 'stats', label: 'Statystki' },
@@ -113,7 +122,7 @@ const Character = () => {
       <div className="flex justify-end p-2 bg-slate-600">
         <button
           onClick={handleLogout}
-          className="px-4 py-2 bg-blue-500 rounded ext-white mfont-bold hover:bg-blue-700"
+          className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
         >
           Wyloguj
         </button>
@@ -124,11 +133,27 @@ const Character = () => {
             Witaj, {currentUser?.email}!
           </h1>
           <div className="flex w-full">
-            <div className="w-1/2">
-              <img
-                src={charakter}
-                alt="character"
-                className="w-full mb-4 border-gray-600 rounded-md"
+            <div className="relative w-1/2 mb-2 bg-slate-600">
+              {image && (
+                <img
+                  src={image}
+                  alt="Uploaded"
+                  style={{
+                    position: 'absolute',
+                    objectFit: 'contain',
+                    height: '100%',
+                    width: '100%',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 100,
+                  }}
+                />
+              )}
+              <input
+                className="absolute w-max p-2 rounded top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
+                type="file"
+                onChange={handleImageUpload}
               />
             </div>
             <div className="justify-center w-1/2">
@@ -263,44 +288,5 @@ const Character = () => {
     </div>
   );
 };
-
-const Weapons = () => (
-  <ul className="grid grid-cols-5 gap-2">
-    <li>
-      <img src={weapon} alt="weapon" />
-    </li>
-    <li>
-      <img src={shield} alt="shield" />
-    </li>
-    <li>
-      <img src={plus} alt="Add weapon" />
-    </li>
-  </ul>
-);
-
-const Wizards = () => (
-  <ul className="grid grid-cols-5 gap-2">
-    <li>
-      <img src={wizard1} alt="wizard1" />
-    </li>
-    <li>
-      <img src={wizard2} alt="wizard2" />
-    </li>
-    <li>
-      <img src={plus} alt="Add spell" />
-    </li>
-  </ul>
-);
-
-const Equipment = () => (
-  <ul className="grid grid-cols-5 gap-2">
-    <li>
-      <img src={torches} alt="torch" />
-    </li>
-    <li>
-      <img src={plus} alt="Add equipment" />
-    </li>
-  </ul>
-);
 
 export default Character;

@@ -1,6 +1,4 @@
-// src/components/Registration.tsx
-
-import React from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import { toast } from 'react-toastify';
@@ -23,16 +21,26 @@ const initialValues = {
 
 const Registration = () => {
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async (values) => {
     const { username, password } = values;
-
+    setLoading(true);
     try {
-      await createUser({ email: username, password });
-      navigate('/character');
+      const user = await createUser({ email: username, password });
+
+      if (user) {
+        toast.success('Konto zostało pomyślnie utworzone!');
+        navigate('/character');
+      } else {
+        toast.error('Nie udało się utworzyć użytkownika. Spróbuj ponownie.');
+      }
     } catch (error) {
-      const errorMessage = getErrorMessage(error.code);
-      toast.error(errorMessage); // Display error message as a toast notification
+      console.error('Kod błędu podczas rejestracji:', error.code);
+      const errorMessage =
+        getErrorMessage(error.code) || 'Wystąpił błąd. Spróbuj ponownie.';
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,11 +62,11 @@ const Registration = () => {
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
             >
-              {() => (
+              {({ isSubmitting }) => (
                 <Form className="flex flex-col w-full max-w-sm">
                   <div className="mb-5">
                     <InputField
-                      type="text"
+                      type="email"
                       id="username"
                       name="username"
                       placeholder="E-mail"
@@ -93,8 +101,9 @@ const Registration = () => {
                     type="submit"
                     className="px-4 py-2 mt-4 font-semibold text-white rounded-lg font-secondaryFont bg-thirdColor hover:bg-fourthColor focus:outline-none focus:ring-2 focus:bg-fourthColor"
                     aria-label="Register Account"
+                    disabled={loading || isSubmitting}
                   >
-                    Załóż konto
+                    {loading ? 'Ładowanie...' : 'Zarejestruj się'}
                   </button>
                 </Form>
               )}
