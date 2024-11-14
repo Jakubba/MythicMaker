@@ -8,13 +8,11 @@ import Equipment from '../components/Equipment';
 import Wizards from '../components/Wizards';
 import plus from './../assets/icons/icon-plus.png';
 import minus from './../assets/icons/icon-minus.png';
-import wizard1 from './../assets/image/zaklecia/wizards1.png';
-import wizard2 from './../assets/image/zaklecia/wiazard2.png';
-import torches from './../assets/image/ekwipunek/torches.png';
+import { stats, tabs } from './../constans/descCharakter';
 
 const Character = () => {
   const { logout, currentUser } = useAuth();
-  const [showPop, setShowPop] = useState(false);
+  const [showListItems, setShowListItems] = useState(false);
   const navigate = useNavigate();
 
   const [characterData, setCharacterData] = useState({
@@ -97,26 +95,6 @@ const Character = () => {
       reader.readAsDataURL(file);
     }
   };
-  const tabs = [
-    { id: 'description', label: 'Opis' },
-    { id: 'stats', label: 'Statystki' },
-    { id: 'weapons', label: 'Bronie' },
-    { id: 'wizards', label: 'Zaklęcia' },
-    { id: 'equipment', label: 'Ekwipunek' },
-    { id: 'notes', label: 'Notatki' },
-    { id: 'characteristics', label: 'Cechy postaci' },
-  ];
-
-  const stats = [
-    { name: 'health', label: 'Punkty życia' },
-    { name: 'strength', label: 'Siła' },
-    { name: 'dexterity', label: 'Zręczność' },
-    { name: 'endurance', label: 'Kondycja' },
-    { name: 'intelligence', label: 'Inteligencja' },
-    { name: 'wisdom', label: 'Mądrość' },
-    { name: 'charisma', label: 'Charyzma' },
-  ];
-
   return (
     <div>
       <div className="flex justify-end p-2 bg-slate-600">
@@ -130,7 +108,7 @@ const Character = () => {
       <div className="flex h-screen">
         <div className="flex flex-col w-1/2 h-full p-4 bg-slate-500">
           <h1 className="mb-5 text-3xl text-center text-neutral-100">
-            Witaj, {currentUser?.email}!
+            Witaj, {currentUser?.email || 'graczu'}!
           </h1>
           <div className="flex w-full">
             <div className="relative w-1/2 mb-2 bg-slate-600">
@@ -138,16 +116,7 @@ const Character = () => {
                 <img
                   src={image}
                   alt="Uploaded"
-                  style={{
-                    position: 'absolute',
-                    objectFit: 'contain',
-                    height: '100%',
-                    width: '100%',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    zIndex: 100,
-                  }}
+                  className="absolute h-full w-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain z-[100]"
                 />
               )}
               <input

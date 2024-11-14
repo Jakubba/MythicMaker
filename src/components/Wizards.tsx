@@ -1,41 +1,35 @@
 import React, { useState } from 'react';
 import ItemList from './ItemList';
-import wizard1 from './../assets/image/zaklecia/wizards1.png';
-import wizard2 from './../assets/image/zaklecia/wiazard2.png';
+import { wizardsItems } from '../constans/wizardItems';
 
 const Wizards = () => {
   const [items, setItems] = useState([]);
 
-  const availableItems = [
-    {
-      id: 1,
-      name: 'Fireball',
-      image: wizard1,
-      stats: { strength: 0, power: 5 },
-    },
-    {
-      id: 2,
-      name: 'Ice Shield',
-      image: wizard2,
-      stats: { strength: 2, power: 2 },
-    },
-  ];
-
   const handleAddItem = (item) => {
-    setItems((prevItems) => [...prevItems, item]);
+    setItems((prevItems) => {
+      const exists = prevItems.some(
+        (prevItem) => prevItem.id === item.id || prevItem.name === item.name,
+      );
+
+      if (exists) {
+        return prevItems;
+      }
+
+      return [...prevItems, item];
+    });
   };
 
   return (
     <div>
       <h2>Zaklęcia</h2>
-      <ItemList items={availableItems} onAddItem={handleAddItem} />
+      <ItemList items={wizardsItems} onAddItem={handleAddItem} />
       <div>
         <h3>Twoje zaklęcia</h3>
         <ul>
-          {items.map((item, index) => (
+          {items.map(({ image, name }, index) => (
             <li key={index}>
-              <img src={item.image} alt={item.name} className="w-16 h-16" />
-              <p>{item.name}</p>
+              <img src={image} alt={name} className="w-16 h-16" />
+              <p>{name}</p>
             </li>
           ))}
         </ul>

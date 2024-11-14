@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../AuthProvider';
 
-const RedirectIfAuthenticated = ({ children }) => {
+const AuthenticationGuard = ({ children }) => {
   const { currentUser } = useAuth();
   const location = useLocation();
 
@@ -13,4 +13,4 @@ const RedirectIfAuthenticated = ({ children }) => {
   return children;
 };
 
-export default RedirectIfAuthenticated;
+export default AuthenticationGuard;

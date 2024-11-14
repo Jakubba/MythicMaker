@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
 import ItemList from './ItemList';
 import torches from './../assets/image/ekwipunek/torches.png';
+import {equipmentItems} from './../constans/equipmentItems';
 
 const Equipment = () => {
   const [items, setItems] = useState([]);
 
-  const availableItems = [
-    {
-      id: 1,
-      name: 'Torch',
-      image: torches,
-      stats: { strength: 0, power: 0 },
-    },
-  ];
-
+  
   const handleAddItem = (item) => {
     setItems((prevItems) => [...prevItems, item]);
   };
@@ -21,7 +14,7 @@ const Equipment = () => {
   return (
     <div>
       <h2>Ekwipunek</h2>
-      <ItemList items={availableItems} onAddItem={handleAddItem} />
+      <ItemList items={equipmentItems}} onAddItem={handleAddItem} />
       <div>
         <h3>Twoje ekwipunek</h3>
         <ul>

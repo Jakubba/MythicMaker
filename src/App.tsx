@@ -1,11 +1,11 @@
 import React from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { AuthProvider } from './AuthProvider';
-import LoginForm from './pages/LoginForm/LoginForm';
-import Registration from './pages/Registration/Registration';
+import LoginForm from './pages/LoginForm/LoginPage';
+import Registration from './pages/Registration/RegisterPage';
 import CharacterPage from './pages/Character';
 import ProtectedRoute from './components/ProtectedRoute';
-import RedirectIfAuthenticated from './components/RedirectIfAuthenticated';
+import AuthenticationGuard from './components/AuthenticationGuard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -16,17 +16,17 @@ const App = () => {
         <Route
           path="/login"
           element={
-            <RedirectIfAuthenticated>
+            <AuthenticationGuard>
               <LoginForm />
-            </RedirectIfAuthenticated>
+            </AuthenticationGuard>
           }
         />
         <Route
           path="/registration"
           element={
-            <RedirectIfAuthenticated>
+            <AuthenticationGuard>
               <Registration />
-            </RedirectIfAuthenticated>
+            </AuthenticationGuard>
           }
         />
         <Route

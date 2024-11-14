@@ -3,11 +3,13 @@ const ItemList = ({ isOpen, onClose, items, onAddItem }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <section className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="relative w-3/4 p-4 bg-white rounded shadow-lg">
         <button
           onClick={onClose}
           className="absolute p-2 text-white bg-red-500 rounded-full top-2 right-2"
+          aria-label="Close button"
+          aria-hidden="true"
         >
           X
         </button>
@@ -30,6 +32,7 @@ const ItemList = ({ isOpen, onClose, items, onAddItem }) => {
                 <button
                   onClick={() => onAddItem(item)}
                   className="py-1 mt-2 text-white bg-green-500 rounded-full"
+                  aria-label="Dodaj element"
                 >
                   + Dodaj
                 </button>
@@ -38,7 +41,7 @@ const ItemList = ({ isOpen, onClose, items, onAddItem }) => {
           ))}
         </ul>
       </div>
-    </div>
+    </section>
   );
 };
 
