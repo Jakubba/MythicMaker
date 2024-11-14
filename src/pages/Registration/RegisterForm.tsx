@@ -1,4 +1,4 @@
-import { Form, Field } from 'formik';
+import { Form } from 'formik';
 import InputField from '../../components/InputField';
 import InputError from '../../components/InputError';
 import CheckField from '../../components/CheckField';
