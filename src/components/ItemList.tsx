@@ -7,7 +7,7 @@ const ItemList = ({ isOpen, onClose, items, onAddItem }) => {
       <div className="relative w-3/4 p-4 bg-white rounded shadow-lg">
         <button
           onClick={onClose}
-          className="absolute p-2 text-white bg-red-500 rounded-full top-2 right-2"
+          className="absolute p-2 text-white text-2xl bg-red-500 rounded-full top-2 right-2 w-[50px] h-[50px]"
           aria-label="Close button"
           aria-hidden="true"
         >
@@ -16,22 +16,25 @@ const ItemList = ({ isOpen, onClose, items, onAddItem }) => {
 
         <h3 className="mb-4 text-xl">Wybierz przedmiot do dodania</h3>
 
-        <ul className="grid grid-cols-3 gap-4">
+        <ul className="flex flex-wrap w-full max-h-[80vh] overflow-y-auto">
           {items.map((item, index) => (
-            <li key={index} className="relative">
+            <li
+              key={index}
+              className="relative w-[100%] lg:w-[100%/4] m-[10px]"
+            >
               <img
                 src={item.image}
                 alt={item.name}
-                className="object-contain w-full h-full mb-2"
+                className="object-contain h-[250px]  w-auto m-auto mb-8 "
               />
-              <div className="absolute bottom-0 left-0 right-0 p-2 bg-white bg-opacity-75">
+              <div className="absolute bottom-0 left-0 right-0 p-2 ">
                 <p className="text-sm text-gray-700">
                   Siła: {item.stats.strength}
                 </p>
                 <p className="text-sm text-gray-700">Moc: {item.stats.power}</p>
                 <button
                   onClick={() => onAddItem(item)}
-                  className="py-1 mt-2 text-white bg-green-500 rounded-full"
+                  className="py-1 mt-2 text-white bg-emerald-800 rounded-full w-[100%]"
                   aria-label="Dodaj element"
                 >
                   + Dodaj

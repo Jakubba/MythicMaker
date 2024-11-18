@@ -105,8 +105,8 @@ const Character = () => {
           Wyloguj
         </button>
       </div>
-      <div className="flex h-screen">
-        <div className="flex flex-col w-1/2 h-full p-4 bg-slate-500">
+      <div className="flex flex-col h-screen lg:flex-row">
+        <div className="flex flex-col w-full h-full p-4 bg-slate-500 lg:w-1/2">
           <h1 className="mb-5 text-3xl text-center text-neutral-100">
             Witaj, {currentUser?.email || 'graczu'}!
           </h1>
@@ -214,7 +214,7 @@ const Character = () => {
             </button>
           </div>
         </div>
-        <div className="flex flex-col w-1/2 h-full p-4 bg-slate-600">
+        <div className="flex flex-col w-full h-full p-4 bg-slate-600 lg:w-1/2">
           <div className="flex">
             {tabs.slice(2).map((tab) => (
               <button
