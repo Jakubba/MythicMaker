@@ -1,10 +1,8 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
-import { getFirestore } from 'firebase/firestore'; // Firestore
-import { getAuth } from 'firebase/auth'; // Authentication
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
+import { getAuth } from 'firebase/auth';
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: 'AIzaSyDKmny9s8Wspx5Fgbq2AjyPoLCv4DQUAB4',
   authDomain: 'mythicmaker-d599b.firebaseapp.com',
@@ -15,13 +13,9 @@ const firebaseConfig = {
   measurementId: 'G-80PYR1XPLM',
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-
-// Initialize Firestore and Auth
 const db = getFirestore(app);
 const auth = getAuth(app);
+const storage = getStorage(app);
 
-// Export the initialized variables
-export { auth, db }; // Export auth and db to use in other modules
+export { auth, db, storage };

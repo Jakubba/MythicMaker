@@ -1,11 +1,11 @@
-import fireball from '../assets/image/zaklecia/wizards1.png';
-import iceShield from '../assets/image/zaklecia/wiazard2.png';
-import stealArm from '../assets/image/zaklecia/wizard3.png';
-import lifeTuner from '../assets/image/zaklecia/wizard4.png';
-import fingerFire from '../assets/image/zaklecia/wizard5.png';
-import magicBalls from '../assets/image/zaklecia/wizard6.png';
-import timeMagic from '../assets/image/zaklecia/wizard7.png';
-import healthAmulet from '../assets/image/zaklecia/wizard8.png';
+import fireball from '../assets/image/spells/wizards1.png';
+import iceShield from '../assets/image/spells/wizard2.png';
+import stealArm from '../assets/image/spells/wizard3.png';
+import lifeTuner from '../assets/image/spells/wizard4.png';
+import fingerFire from '../assets/image/spells/wizard5.png';
+import magicBalls from '../assets/image/spells/wizard6.png';
+import timeMagic from '../assets/image/spells/wizard7.png';
+import healthAmulet from '../assets/image/spells/wizard8.png';
 
 export const wizardsItems = [
   {

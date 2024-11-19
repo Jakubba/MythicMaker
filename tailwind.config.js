@@ -3,6 +3,9 @@ module.exports = {
   content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
+      spacing: {
+        'calc-25-minus-20': 'calc(25% - 20px)',
+      },
       colors: {
         primaryColor: '#1a3c2c',
         secondaryColor: '#45352b',

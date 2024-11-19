@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik } from 'formik';
 import { toast } from 'react-toastify';
-import validationSchema from '../LoginForm/schema';
+import validationSchema from '../Registration/schema';
 import AuthenticationGuard from '../../components/AuthenticationGuard';
 import InfoPage from '../../blocks/InfoPage';
 import bgRegistration from '../../assets/image/registration.png';

@@ -1,11 +1,11 @@
-import touch from '../assets/image/ekwipunek/torches.png';
-import fireStone from '../assets/image/ekwipunek/equipment1.png';
-import dragonHeart from '../assets/image/ekwipunek/equipment2.png';
-import crown from '../assets/image/ekwipunek/equipment3.png';
-import indianBag from '../assets/image/ekwipunek/equipment4.png';
-import hellAmulet from '../assets/image/ekwipunek/equipment6.png';
-import handcuffs from '../assets/image/ekwipunek/equipment5.png';
-import witcherJar from '../assets/image/ekwipunek/equipment7.png';
+import touch from '../assets/image/equipment/torches.png';
+import fireStone from '../assets/image/equipment/equipment1.png';
+import dragonHeart from '../assets/image/equipment/equipment2.png';
+import crown from '../assets/image/equipment/equipment3.png';
+import indianBag from '../assets/image/equipment/equipment4.png';
+import hellAmulet from '../assets/image/equipment/equipment6.png';
+import handcuffs from '../assets/image/equipment/equipment5.png';
+import witcherJar from '../assets/image/equipment/equipment7.png';
 export const equipmentItems = [
   {
     id: 1,

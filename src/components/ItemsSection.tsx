@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   addItemToFirestore,
   getItemsFromFirestore,
+  deleteItemFromFirestore,
 } from '../firebase-function';
 import ItemList from './ItemList';
 
@@ -14,6 +15,16 @@ const ItemsSection = ({ title, itemsData }) => {
     setItems(updatedItems);
     addItemToFirestore(item);
     setIsModalOpen(false);
+  };
+
+  const handleRemoveItem = async (itemId) => {
+    try {
+      await deleteItemFromFirestore(itemId);
+      const updatedItems = items.filter((item) => item.id !== itemId);
+      setItems(updatedItems);
+    } catch (error) {
+      console.error('Błąd przy usuwaniu przedmiotu:', error);
+    }
   };
 
   const toggleModal = () => {
@@ -48,9 +59,9 @@ const ItemsSection = ({ title, itemsData }) => {
           {items?.length === 0 ? (
             <p>Nie dodałeś jeszcze żadnych przedmiotów.</p>
           ) : (
-            items.map(({ image, name, stats }, index) => (
+            items.map(({ image, name, stats, id }, index) => (
               <li
-                key={index}
+                key={id || index} // Use 'id' if available
                 className="flex items-center p-2 space-x-4 rounded-md bg-slate-50"
               >
                 <img src={image} alt={name} className="w-16 h-16" />
@@ -63,6 +74,12 @@ const ItemsSection = ({ title, itemsData }) => {
                     Moc: {stats?.power || 'Brak danych'}
                   </p>
                 </div>
+                <button
+                  onClick={() => handleRemoveItem(id)}
+                  className="p-2 ml-auto text-white bg-red-500 rounded"
+                >
+                  Usuń produkt
+                </button>
               </li>
             ))
           )}

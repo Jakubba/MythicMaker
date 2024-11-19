@@ -20,7 +20,7 @@ const ItemList = ({ isOpen, onClose, items, onAddItem }) => {
           {items.map((item, index) => (
             <li
               key={index}
-              className="relative w-[100%] lg:w-[100%/4] m-[10px]"
+              className="relative w-[100%] lg:calc-25-minus-20 m-[10px]"
             >
               <img
                 src={item.image}

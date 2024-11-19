@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './../AuthProvider';
-import { db } from './../firebase';
+import { db, storage } from './../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import Weapons from '../components/Weapons';
 import Equipment from '../components/Equipment';
@@ -29,6 +30,7 @@ const Character = () => {
     intelligence: 0,
     wisdom: 0,
     charisma: 0,
+    imageURL: '',
   });
 
   const [activeTab, setActiveTab] = useState('description');
@@ -54,25 +56,47 @@ const Character = () => {
     loadCharacterData();
   }, [currentUser]);
 
+  useEffect(() => {
+    const saveCharacterData = async () => {
+      if (currentUser) {
+        try {
+          await setDoc(doc(db, 'characters', currentUser.uid), characterData);
+        } catch (error) {
+          console.error('Failed to save character data:', error);
+        }
+      }
+    };
+    saveCharacterData();
+  }, [characterData, currentUser]);
+
+  useEffect(() => {
+    const uploadImage = async () => {
+      if (image) {
+        const imageRef = ref(
+          storage,
+          `images/${currentUser.uid}/${image.name}`,
+        );
+        try {
+          await uploadBytes(imageRef, image);
+          const imageURL = await getDownloadURL(imageRef);
+          setCharacterData((prevData) => ({ ...prevData, imageURL }));
+        } catch (error) {
+          console.error('Failed to upload image:', error);
+        }
+      }
+    };
+    uploadImage();
+  }, [image, currentUser]);
+
   const handleLogout = async () => {
     try {
       if (currentUser) {
-        await handleSaveData();
+        await setDoc(doc(db, 'characters', currentUser.uid), characterData);
       }
       logout();
       navigate('/login');
     } catch (error) {
       alert('Failed to save character data before logout.');
-    }
-  };
-  const handleSaveData = async () => {
-    if (currentUser) {
-      try {
-        await setDoc(doc(db, 'characters', currentUser.uid), characterData);
-        alert('Dane zostały zapisane!');
-      } catch (error) {
-        alert('Failed to save character data.');
-      }
     }
   };
 
@@ -87,14 +111,23 @@ const Character = () => {
       [stat]: Math.max(prevData[stat] + delta, 0),
     }));
   };
-  const handleImageUpload = (event) => {
+
+  const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setImage(reader.result);
-      reader.readAsDataURL(file);
+      const storageRef = ref(storage, `images/${file.name}`);
+      try {
+        await uploadBytes(storageRef, file);
+        console.log('File uploaded successfully!');
+
+        const fileURL = await getDownloadURL(storageRef);
+        console.log('File available at: ', fileURL);
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
     }
   };
+
   return (
     <div>
       <div className="flex justify-end p-2 bg-slate-600">
@@ -112,9 +145,9 @@ const Character = () => {
           </h1>
           <div className="flex w-full">
             <div className="relative w-1/2 mb-2 bg-slate-600">
-              {image && (
+              {characterData.imageURL && (
                 <img
-                  src={image}
+                  src={characterData.imageURL}
                   alt="Uploaded"
                   className="absolute h-full w-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain z-[100]"
                 />
@@ -206,12 +239,6 @@ const Character = () => {
                 </tbody>
               </table>
             )}
-            <button
-              className="block p-2 mt-2 ml-auto font-bold text-white bg-blue-900 rounded hover:bg-gray-700 active:bg-gray-800"
-              onClick={handleSaveData}
-            >
-              Zapisz
-            </button>
           </div>
         </div>
         <div className="flex flex-col w-full h-full p-4 bg-slate-600 lg:w-1/2">
