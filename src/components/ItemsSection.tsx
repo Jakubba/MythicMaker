@@ -12,13 +12,13 @@ const ItemsSection = ({ title, itemsData }) => {
   const handleAddItem = (item) => {
     const updatedItems = [...items, item];
     setItems(updatedItems);
-    addItemToFirestore(item);
+    addItemToFirebase(item);
     setIsModalOpen(false);
   };
 
   const handleRemoveItem = async (itemId) => {
     try {
-      await deleteItemFromFirestore(itemId);
+      await deleteItemFromFirebase(itemId);
       const updatedItems = items.filter((item) => item.id !== itemId);
       setItems(updatedItems);
     } catch (error) {
@@ -33,7 +33,7 @@ const ItemsSection = ({ title, itemsData }) => {
   useEffect(() => {
     const loadItems = async () => {
       try {
-        const savedItems = await getItemsFromFirestore();
+        const savedItems = await getItemsFromFirebase();
         setItems(savedItems || []);
       } catch (error) {
         console.error('Błąd przy ładowaniu przedmiotów:', error);
