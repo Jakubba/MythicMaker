@@ -39,20 +39,23 @@ const Character = () => {
 
   useEffect(() => {
     const loadCharacterData = async () => {
-      if (currentUser) {
-        try {
-          const docSnap = await getDoc(doc(db, 'characters', currentUser.uid));
-          if (docSnap.exists()) {
-            setCharacterData(docSnap.data());
-          } else {
-            console.log('No character data found.');
-          }
-        } catch (error) {
-          console.error('Failed to load character data:', error);
-          alert('Failed to load character data.');
+      if (!currentUser) {
+        return;
+      }
+
+      try {
+        const docSnap = await getDoc(doc(db, 'characters', currentUser.uid));
+        if (docSnap.exists()) {
+          setCharacterData(docSnap.data());
+        } else {
+          console.log('Brak danych postaci.');
         }
+      } catch (error) {
+        console.error('Nie udało się załadować danych postaci:', error);
+        alert('Nie udało się załadować danych postaci.');
       }
     };
+
     loadCharacterData();
   }, [currentUser]);
 

@@ -60,7 +60,7 @@ const ItemsSection = ({ title, itemsData }) => {
           ) : (
             items.map(({ image, name, stats, id }, index) => (
               <li
-                key={id} // Use 'id' if available
+                key={id}
                 className="flex items-center p-2 space-x-4 rounded-md bg-slate-50"
               >
                 <img src={image} alt={name} className="w-16 h-16" />
