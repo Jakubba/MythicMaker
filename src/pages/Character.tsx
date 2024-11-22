@@ -60,7 +60,14 @@ const Character = () => {
     const saveCharacterData = async () => {
       if (currentUser) {
         try {
-          await setDoc(doc(db, 'characters', currentUser.uid), characterData);
+          const docRef = doc(db, 'characters', currentUser.uid);
+          const docSnap = await getDoc(docRef);
+          if (
+            !docSnap.exists() ||
+            JSON.stringify(docSnap.data()) !== JSON.stringify(characterData)
+          ) {
+            await setDoc(docRef, characterData);
+          }
         } catch (error) {
           console.error('Failed to save character data:', error);
         }
@@ -115,13 +122,17 @@ const Character = () => {
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      const storageRef = ref(storage, `images/${file.name}`);
+      const storageRef = ref(storage, `images/${currentUser.uid}/${file.name}`);
       try {
         await uploadBytes(storageRef, file);
-        console.log('File uploaded successfully!');
-
         const fileURL = await getDownloadURL(storageRef);
-        console.log('File available at: ', fileURL);
+        setCharacterData((prevData) => ({ ...prevData, imageURL: fileURL }));
+        if (currentUser) {
+          await setDoc(doc(db, 'characters', currentUser.uid), {
+            ...characterData,
+            imageURL: fileURL,
+          });
+        }
       } catch (error) {
         console.error('Error uploading file:', error);
       }

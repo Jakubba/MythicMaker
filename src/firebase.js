@@ -4,13 +4,13 @@ import { getStorage } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDKmny9s8Wspx5Fgbq2AjyPoLCv4DQUAB4',
-  authDomain: 'mythicmaker-d599b.firebaseapp.com',
-  projectId: 'mythicmaker-d599b',
-  storageBucket: 'mythicmaker-d599b.appspot.com',
-  messagingSenderId: '477094378171',
-  appId: '1:477094378171:web:61d09d041074986c02479e',
-  measurementId: 'G-80PYR1XPLM',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = initializeApp(firebaseConfig);

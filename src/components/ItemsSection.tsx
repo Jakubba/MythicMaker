@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {
-  addItemToFirestore,
-  getItemsFromFirestore,
-  deleteItemFromFirestore,
-} from '../firebase-function';
+import { addItemToFirebase } from '../services/addItemToFirebase';
+import { deleteItemFromFirebase } from '../services/deleteItemFromFirebase';
+import { getItemsFromFirebase } from '../services/getItemsFromFirebase';
 import ItemList from './ItemList';
+import { i } from 'vite/dist/node/types.d-aGj9QkWt';
 
 const ItemsSection = ({ title, itemsData }) => {
   const [items, setItems] = useState([]);
@@ -61,7 +60,7 @@ const ItemsSection = ({ title, itemsData }) => {
           ) : (
             items.map(({ image, name, stats, id }, index) => (
               <li
-                key={id || index} // Use 'id' if available
+                key={id} // Use 'id' if available
                 className="flex items-center p-2 space-x-4 rounded-md bg-slate-50"
               >
                 <img src={image} alt={name} className="w-16 h-16" />
