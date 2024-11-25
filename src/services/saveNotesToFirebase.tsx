@@ -1,7 +1,12 @@
+import { db } from '../firebase';
+import { doc, setDoc } from 'firebase/firestore';
+
 export const saveNotesToFirebase = async (notes) => {
   try {
-    const docRef = firebase.firestore().collection('categories').doc('notes');
-    await docRef.set({ content: notes });
+    const docRef = doc(db, 'categories', 'notes');
+
+    await setDoc(docRef, { content: notes });
+
     console.log('Notatki zapisane pomyślnie.');
   } catch (error) {
     console.error('Błąd przy zapisywaniu notatek:', error);

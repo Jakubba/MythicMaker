@@ -2,12 +2,34 @@ import { auth, db } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
 
+interface UserProfile {
+  name: string;
+  race: string;
+  age: number;
+  class: string;
+  level: number;
+  description: string;
+  health: number;
+  strength: number;
+  dexterity: number;
+  endurance: number;
+  intelligence: number;
+  wisdom: number;
+  charisma: number;
+  imageURL: string;
+}
+
 interface CreateUserParams {
   email: string;
   password: string;
+  profile: UserProfile;
 }
 
-export const createUser = async ({ email, password }: CreateUserParams) => {
+export const createUser = async ({
+  email,
+  password,
+  profile,
+}: CreateUserParams) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -16,14 +38,21 @@ export const createUser = async ({ email, password }: CreateUserParams) => {
     );
     const user = userCredential.user;
 
-    await setDoc(doc(db, 'users', user.uid), {
-      email: email,
+    const userData = {
+      email,
       createdAt: new Date(),
-    });
+      ...profile,
+      weapons: [],
+      spells: [],
+      equipment: [],
+    };
 
-    console.log('Registered:', user);
+    await setDoc(doc(db, 'users', user.uid), userData);
+
+    console.log('Registered and profile created:', user);
     return user;
   } catch (error) {
+    console.error('Error creating user:', error);
     throw error;
   }
 };
