@@ -31,6 +31,13 @@ const Character = () => {
     wisdom: 0,
     charisma: 0,
     imageURL: '',
+    notes: '',
+    skillsNotes: '',
+    personalityTraits: '',
+    weakness: '',
+    weapons: [],
+    spells: [],
+    equipment: [],
   });
 
   const [activeTab, setActiveTab] = useState('description');
@@ -273,6 +280,9 @@ const Character = () => {
             {activeTab === 'equipment' && <Equipment />}
             {activeTab === 'notes' && (
               <textarea
+                name="notes"
+                value={characterData.notes}
+                onChange={handleInputChange}
                 className="w-full h-full mt-4 min-h-40"
                 placeholder="Notatki ..."
                 style={{ resize: 'none' }}
@@ -280,16 +290,27 @@ const Character = () => {
             )}
             {activeTab === 'characteristics' && (
               <div className="mt-4">
-                {['Umiejętności', 'Cechy osobowości', 'Słabości'].map(
-                  (label) => (
-                    <textarea
-                      key={label}
-                      className="w-full h-40 mb-5"
-                      placeholder={label}
-                      style={{ resize: 'none' }}
-                    />
-                  ),
-                )}
+                <textarea
+                  name="skillsNotes"
+                  value={characterData.skillsNotes}
+                  onChange={handleInputChange}
+                  className="w-full h-40 mb-5"
+                  placeholder="Umiejętności"
+                />
+                <textarea
+                  name="personalityTraits"
+                  value={characterData.personalityTraits}
+                  onChange={handleInputChange}
+                  className="w-full h-40 mb-5"
+                  placeholder="Cechy osobowości"
+                />
+                <textarea
+                  name="weakness"
+                  value={characterData.weakness}
+                  onChange={handleInputChange}
+                  className="w-full h-40 mb-5"
+                  placeholder="Słabości"
+                />
               </div>
             )}
           </div>

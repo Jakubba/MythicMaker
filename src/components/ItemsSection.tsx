@@ -36,12 +36,29 @@ const ItemsSection = ({ title, itemsData, category }) => {
   };
 
   useEffect(() => {
+    // const loadItems = async () => {
+    //   try {
+    //     const savedItems = await getItemsFromFirebase(category);
+    //     setItems(savedItems || []); // Update the state with the fetched items
+    //   } catch (error) {
+    //     console.error('Błąd przy ładowaniu przedmiotów:', error);
+    //   }
+    // };
     const loadItems = async () => {
       try {
         const savedItems = await getItemsFromFirebase(category);
-        setItems(savedItems || []); // Update the state with the fetched items
+        if (!savedItems || !Array.isArray(savedItems)) {
+          console.error(
+            'Oczekiwano tablicy przedmiotów, ale otrzymano:',
+            savedItems,
+          );
+          setItems([]);
+        } else {
+          setItems(savedItems);
+        }
       } catch (error) {
         console.error('Błąd przy ładowaniu przedmiotów:', error);
+        setItems([]);
       }
     };
 
@@ -75,13 +92,12 @@ const ItemsSection = ({ title, itemsData, category }) => {
 
         <ul>
           {items.map((item, index) => {
-            if (!item || !item.id) {
+            if (!item || !item.id || !item.stats) {
               console.error('Nieprawidłowy przedmiot:', item);
-              return null;
+              return null; // Pomijamy nieprawidłowy przedmiot
             }
 
             const uniqueKey = item.id || `item-${index}`;
-
             return (
               <li
                 key={uniqueKey}

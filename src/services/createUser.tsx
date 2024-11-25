@@ -1,7 +1,7 @@
 import { auth, db } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
-
+import touch from '../assets/image/equipment/torches.png';
 interface UserProfile {
   name: string;
   race: string;
@@ -17,6 +17,10 @@ interface UserProfile {
   wisdom: number;
   charisma: number;
   imageURL: string;
+  notes: any;
+  skillsNotes: any;
+  personalityTraits: any;
+  weakness: any;
 }
 
 interface CreateUserParams {
