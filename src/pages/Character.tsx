@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './../AuthProvider';
-import { db } from './../firebase';
+import { db, storage } from './../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-import charakter from './../assets/image/charakter.png';
+import Weapons from '../components/Weapons';
+import Equipment from '../components/Equipment';
+import Wizards from '../components/Wizards';
 import plus from './../assets/icons/icon-plus.png';
 import minus from './../assets/icons/icon-minus.png';
-import weapon from './../assets/image/wapons/pngegg.png';
-import shield from './../assets/image/wapons/shield.png';
-import wizard1 from './../assets/image/zaklecia/wizards1.png';
-import wizard2 from './../assets/image/zaklecia/wiazard2.png';
-import torches from './../assets/image/ekwipunek/torches.png';
+import { stats, tabs } from './../constans/descCharakter';
 
 const Character = () => {
   const { logout, currentUser } = useAuth();
+  const [showListItems, setShowListItems] = useState(false);
   const navigate = useNavigate();
 
   const [characterData, setCharacterData] = useState({
@@ -30,49 +30,83 @@ const Character = () => {
     intelligence: 0,
     wisdom: 0,
     charisma: 0,
+    imageURL: '',
   });
 
   const [activeTab, setActiveTab] = useState('description');
   const [personalTab, setPersonalTab] = useState('description');
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     const loadCharacterData = async () => {
+      if (!currentUser) {
+        return;
+      }
+
+      try {
+        const docSnap = await getDoc(doc(db, 'characters', currentUser.uid));
+        if (docSnap.exists()) {
+          setCharacterData(docSnap.data());
+        } else {
+          console.log('Brak danych postaci.');
+        }
+      } catch (error) {
+        console.error('Nie udało się załadować danych postaci:', error);
+        alert('Nie udało się załadować danych postaci.');
+      }
+    };
+
+    loadCharacterData();
+  }, [currentUser]);
+
+  useEffect(() => {
+    const saveCharacterData = async () => {
       if (currentUser) {
         try {
-          const docSnap = await getDoc(doc(db, 'characters', currentUser.uid));
-          if (docSnap.exists()) {
-            setCharacterData(docSnap.data());
-          } else {
-            console.log('No character data found.');
+          const docRef = doc(db, 'characters', currentUser.uid);
+          const docSnap = await getDoc(docRef);
+          if (
+            !docSnap.exists() ||
+            JSON.stringify(docSnap.data()) !== JSON.stringify(characterData)
+          ) {
+            await setDoc(docRef, characterData);
           }
         } catch (error) {
-          console.error('Failed to load character data:', error);
-          alert('Failed to load character data.');
+          console.error('Failed to save character data:', error);
         }
       }
     };
-    loadCharacterData();
-  }, [currentUser]);
+    saveCharacterData();
+  }, [characterData, currentUser]);
+
+  useEffect(() => {
+    const uploadImage = async () => {
+      if (image) {
+        const imageRef = ref(
+          storage,
+          `images/${currentUser.uid}/${image.name}`,
+        );
+        try {
+          await uploadBytes(imageRef, image);
+          const imageURL = await getDownloadURL(imageRef);
+          setCharacterData((prevData) => ({ ...prevData, imageURL }));
+        } catch (error) {
+          console.error('Failed to upload image:', error);
+        }
+      }
+    };
+    uploadImage();
+  }, [image, currentUser]);
 
   const handleLogout = async () => {
     try {
       if (currentUser) {
-        await handleSaveData();
+        await setDoc(doc(db, 'characters', currentUser.uid), characterData);
       }
       logout();
       navigate('/login');
     } catch (error) {
       alert('Failed to save character data before logout.');
-    }
-  };
-  const handleSaveData = async () => {
-    if (currentUser) {
-      try {
-        await setDoc(doc(db, 'characters', currentUser.uid), characterData);
-        alert('Dane zostały zapisane!');
-      } catch (error) {
-        alert('Failed to save character data.');
-      }
     }
   };
 
@@ -88,47 +122,54 @@ const Character = () => {
     }));
   };
 
-  const tabs = [
-    { id: 'description', label: 'Opis' },
-    { id: 'stats', label: 'Statystki' },
-    { id: 'weapons', label: 'Bronie' },
-    { id: 'wizards', label: 'Zaklęcia' },
-    { id: 'equipment', label: 'Ekwipunek' },
-    { id: 'notes', label: 'Notatki' },
-    { id: 'characteristics', label: 'Cechy postaci' },
-  ];
-
-  const stats = [
-    { name: 'health', label: 'Punkty życia' },
-    { name: 'strength', label: 'Siła' },
-    { name: 'dexterity', label: 'Zręczność' },
-    { name: 'endurance', label: 'Kondycja' },
-    { name: 'intelligence', label: 'Inteligencja' },
-    { name: 'wisdom', label: 'Mądrość' },
-    { name: 'charisma', label: 'Charyzma' },
-  ];
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const storageRef = ref(storage, `images/${currentUser.uid}/${file.name}`);
+      try {
+        await uploadBytes(storageRef, file);
+        const fileURL = await getDownloadURL(storageRef);
+        setCharacterData((prevData) => ({ ...prevData, imageURL: fileURL }));
+        if (currentUser) {
+          await setDoc(doc(db, 'characters', currentUser.uid), {
+            ...characterData,
+            imageURL: fileURL,
+          });
+        }
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    }
+  };
 
   return (
     <div>
       <div className="flex justify-end p-2 bg-slate-600">
         <button
           onClick={handleLogout}
-          className="px-4 py-2 bg-blue-500 rounded ext-white mfont-bold hover:bg-blue-700"
+          className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
         >
           Wyloguj
         </button>
       </div>
-      <div className="flex h-screen">
-        <div className="flex flex-col w-1/2 h-full p-4 bg-slate-500">
+      <div className="flex flex-col h-screen lg:flex-row">
+        <div className="flex flex-col w-full h-full p-4 bg-slate-500 lg:w-1/2">
           <h1 className="mb-5 text-3xl text-center text-neutral-100">
-            Witaj, {currentUser?.email}!
+            Witaj, {currentUser?.email || 'graczu'}!
           </h1>
           <div className="flex w-full">
-            <div className="w-1/2">
-              <img
-                src={charakter}
-                alt="character"
-                className="w-full mb-4 border-gray-600 rounded-md"
+            <div className="relative w-1/2 mb-2 bg-slate-600">
+              {characterData.imageURL && (
+                <img
+                  src={characterData.imageURL}
+                  alt="Uploaded"
+                  className="absolute h-full w-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain z-[100]"
+                />
+              )}
+              <input
+                className="absolute w-max p-2 rounded top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
+                type="file"
+                onChange={handleImageUpload}
               />
             </div>
             <div className="justify-center w-1/2">
@@ -212,15 +253,9 @@ const Character = () => {
                 </tbody>
               </table>
             )}
-            <button
-              className="block p-2 mt-2 ml-auto font-bold text-white bg-blue-900 rounded hover:bg-gray-700 active:bg-gray-800"
-              onClick={handleSaveData}
-            >
-              Zapisz
-            </button>
           </div>
         </div>
-        <div className="flex flex-col w-1/2 h-full p-4 bg-slate-600">
+        <div className="flex flex-col w-full h-full p-4 bg-slate-600 lg:w-1/2">
           <div className="flex">
             {tabs.slice(2).map((tab) => (
               <button
@@ -263,44 +298,5 @@ const Character = () => {
     </div>
   );
 };
-
-const Weapons = () => (
-  <ul className="grid grid-cols-5 gap-2">
-    <li>
-      <img src={weapon} alt="weapon" />
-    </li>
-    <li>
-      <img src={shield} alt="shield" />
-    </li>
-    <li>
-      <img src={plus} alt="Add weapon" />
-    </li>
-  </ul>
-);
-
-const Wizards = () => (
-  <ul className="grid grid-cols-5 gap-2">
-    <li>
-      <img src={wizard1} alt="wizard1" />
-    </li>
-    <li>
-      <img src={wizard2} alt="wizard2" />
-    </li>
-    <li>
-      <img src={plus} alt="Add spell" />
-    </li>
-  </ul>
-);
-
-const Equipment = () => (
-  <ul className="grid grid-cols-5 gap-2">
-    <li>
-      <img src={torches} alt="torch" />
-    </li>
-    <li>
-      <img src={plus} alt="Add equipment" />
-    </li>
-  </ul>
-);
 
 export default Character;

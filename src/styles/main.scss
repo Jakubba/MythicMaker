@@ -1,15 +1,26 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 @layer components {
-    .customGlass {
-      background: rgba(236, 236, 236, 0.2);
-      box-shadow: 0 8px 32px 0 rgb(0, 2, 33);
-      backdrop-filter: blur(7.5px);
-      -webkit-backdrop-filter: blur(7.5px);
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-    }
+  .customGlass {
+    background: rgba(236, 236, 236, 0.2);
+    box-shadow: 0 8px 32px 0 rgb(0, 2, 33);
+    backdrop-filter: blur(7.5px);
+    -webkit-backdrop-filter: blur(7.5px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
   }
+}
 
+.loader {
+  border-top-color: #3498db;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

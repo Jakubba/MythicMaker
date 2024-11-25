@@ -1,33 +1,13 @@
-// import React from 'react';
-// import { Route, Routes, Navigate } from 'react-router-dom';
-// import { AuthProvider } from './AuthProvider';
-// import LoginForm from './pages/LoginForm/LoginForm';
-// import Registration from './pages/Registration/Registration';
-// import CharacterPage from './pages/Character';
-
-// const App = () => {
-//   return (
-//     <AuthProvider>
-//       <Routes>
-//         <Route path="/login" element={<LoginForm />} />
-//         <Route path="/registration" element={<Registration />} />
-//         <Route path="/character" element={<CharacterPage />} />
-//         <Route path="*" element={<Navigate to="/login" />} />
-//       </Routes>
-//     </AuthProvider>
-//   );
-// };
-
-// export default App;
-// App.tsx
 import React from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { AuthProvider } from './AuthProvider';
-import LoginForm from './pages/LoginForm/LoginForm';
-import Registration from './pages/Registration/Registration';
+import LoginForm from './pages/LoginForm/LoginPage';
+import Registration from './pages/Registration/RegisterPage';
 import CharacterPage from './pages/Character';
-import ProtectedRoute from './components/ProtectedRoute'; // Make sure this path is correct
-import RedirectIfAuthenticated from './components/RedirectIfAuthenticated'; // Make sure this path is correct
+import ProtectedRoute from './components/ProtectedRoute';
+import AuthenticationGuard from './components/AuthenticationGuard';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
@@ -36,17 +16,17 @@ const App = () => {
         <Route
           path="/login"
           element={
-            <RedirectIfAuthenticated>
+            <AuthenticationGuard>
               <LoginForm />
-            </RedirectIfAuthenticated>
+            </AuthenticationGuard>
           }
         />
         <Route
           path="/registration"
           element={
-            <RedirectIfAuthenticated>
+            <AuthenticationGuard>
               <Registration />
-            </RedirectIfAuthenticated>
+            </AuthenticationGuard>
           }
         />
         <Route
@@ -59,6 +39,14 @@ const App = () => {
         />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
     </AuthProvider>
   );
 };
