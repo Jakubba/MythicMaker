@@ -1,28 +1,36 @@
 import { db } from '../firebase';
-import { doc, collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
-export const getItemsFromFirebase = async (category: string) => {
+export const getItemsFromFirebase = async (
+  category: string,
+): Promise<any[]> => {
   try {
-    // Referencja do dokumentu kategorii
-    const categoryRef = doc(db, 'categories', category);
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
 
-    // Referencja do kolekcji produktów w danej kategorii
-    const productsCollectionRef = collection(categoryRef, 'products');
-    const snapshot = await getDocs(productsCollectionRef);
-
-    // Sprawdzamy, czy w ogóle mamy dane w kolekcji
-    if (snapshot.empty) {
-      console.warn('Brak danych w kolekcji produktów.');
-      return []; // Zwracamy pustą tablicę, jeśli brak danych
+    if (!currentUser) {
+      throw new Error('User not authenticated');
     }
 
-    // Przetwarzamy dane z snapshotu
+    const userId = currentUser.uid;
+
+    const categoriesRef = collection(db, 'users', userId, 'categories');
+    const categoryRef = collection(categoriesRef, category, 'products');
+
+    const snapshot = await getDocs(categoryRef);
+
+    if (snapshot.empty) {
+      console.warn('Brak danych w kolekcji produktów.');
+      return [];
+    }
+
     const items = snapshot.docs
       .map((doc) => {
         const data = doc.data();
         if (!data || !data.name || !data.stats) {
           console.warn(`Niepełne dane w produkcie o ID: ${doc.id}`, data);
-          return null; // Zwracamy null, jeśli dane są niekompletne
+          return null;
         }
 
         return {
@@ -30,24 +38,21 @@ export const getItemsFromFirebase = async (category: string) => {
           ...data,
         };
       })
-      .filter((item) => item !== null); // Filtrujemy null-e
+      .filter((item) => item !== null);
 
-    // Sprawdzanie unikalności ID
     const ids = items.map((item) => item.id);
     const uniqueIds = new Set(ids);
     if (uniqueIds.size !== ids.length) {
       console.warn('Duplikaty ID w danych:', ids);
     }
 
-    // Jeśli nie ma jeszcze danych w tablicach (np. weapons, spells, equipment), przypisujemy puste tablice
     const formattedItems = items.map((item) => ({
       ...item,
-      weapons: item.weapons || [],
-      spells: item.spells || [],
-      equipment: item.equipment || [],
+      weapons: Array.isArray(item.weapons) ? item.weapons : [],
+      spells: Array.isArray(item.spells) ? item.spells : [],
+      equipment: Array.isArray(item.equipment) ? item.equipment : [],
     }));
 
-    // Wyświetlamy dane przedmiotów w konsoli
     console.log('Dane z Firebase:', formattedItems);
 
     return formattedItems;

@@ -137,6 +137,7 @@ const Character = () => {
         await uploadBytes(storageRef, file);
         const fileURL = await getDownloadURL(storageRef);
         setCharacterData((prevData) => ({ ...prevData, imageURL: fileURL }));
+
         if (currentUser) {
           await setDoc(doc(db, 'characters', currentUser.uid), {
             ...characterData,

@@ -1,17 +1,35 @@
 import { db } from '../firebase';
 import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
-export const addItemToFirebase = async (item, category) => {
+interface Item {
+  id: string;
+  name: string;
+  [key: string]: any;
+}
+
+export const addItemToFirebase = async (
+  item: Item,
+  category: string,
+): Promise<string> => {
   try {
-    const userRef = doc(db, 'users', 'userId'); // Replace 'userId' with the actual user ID
-    const categoryRef = doc(userRef, category); // Reference to the category document (weapons, spells, equipment)
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
 
-    // Add the item to the correct category
-    await updateDoc(categoryRef, {
-      [category]: arrayUnion(item), // Add item to the category array
+    if (!currentUser) {
+      throw new Error('User not authenticated');
+    }
+
+    const userId = currentUser.uid;
+
+    const userRef = doc(db, 'users', userId);
+
+    await updateDoc(userRef, {
+      [category]: arrayUnion(item),
     });
 
-    return item.id; // Return the item's ID
+    console.log(`Item added to category ${category}:`, item);
+    return item.id;
   } catch (error) {
     console.error('Error adding item to Firebase:', error);
     throw error;

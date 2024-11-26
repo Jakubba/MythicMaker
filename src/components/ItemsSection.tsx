@@ -3,85 +3,95 @@ import { addItemToFirebase } from '../services/addItemToFirebase';
 import { deleteItemFromFirebase } from '../services/deleteItemFromFirebase';
 import { getItemsFromFirebase } from '../services/getItemsFromFirebase';
 import ItemList from './ItemList';
+import { getAuth } from 'firebase/auth';
+import { v4 as uuidv4 } from 'uuid';
 
-const ItemsSection = ({ title, itemsData, category }) => {
-  const [items, setItems] = useState([]);
+interface Stats {
+  strength: number;
+  power: number;
+}
+
+interface Item {
+  id: string;
+  name: string;
+  image?: string;
+  stats?: Stats;
+}
+
+interface ItemsSectionProps {
+  title: string;
+  itemsData: Item[];
+  category: string;
+}
+
+const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
+  const [items, setItems] = useState<Item[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>(category);
 
-  const handleAddItem = async (item) => {
+  // Handle adding an item to Firebase
+  const handleAddItem = async (item: Item, category: string) => {
     try {
-      console.log('Dodawanie przedmiotu:', item);
+      const itemId = uuidv4();
+      const newItem = {
+        ...item,
+        id: itemId,
+        image: item.image || '/placeholder.jpg',
+        stats: item.stats || { strength: 0, power: 0 },
+      };
 
-      let itemId;
-      if (category === 'weapons') {
-        itemId = await addItemToFirebase(item, 'weapons');
-      } else if (category === 'spells') {
-        itemId = await addItemToFirebase(item, 'spells');
-      } else if (category === 'equipment') {
-        itemId = await addItemToFirebase(item, 'equipment');
-      }
-
-      const newItem = { ...item, id: itemId };
-
-      setItems((prevItems) => {
-        return [...prevItems, newItem];
-      });
-
-      console.log('Stan po dodaniu:', newItem);
-
-      setIsModalOpen(false);
+      await addItemToFirebase(newItem, category);
+      setItems((prevItems) => [...prevItems, newItem]);
+      setIsModalOpen(false); // Close modal after adding item
     } catch (error) {
-      console.error('Błąd przy dodawaniu przedmiotu:', error);
+      console.error('Error adding item:', error);
     }
   };
 
+  // Handle removing an item from Firebase
+  const handleRemoveItem = async (itemId: string) => {
+    try {
+      await deleteItemFromFirebase(itemId, selectedCategory);
+      setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+    } catch (error) {
+      console.error('Error removing item:', error);
+    }
+  };
+
+  // Handle changing the category
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+  };
+
+  // Load items when the category changes
   useEffect(() => {
-    // const loadItems = async () => {
-    //   try {
-    //     const savedItems = await getItemsFromFirebase(category);
-    //     setItems(savedItems || []); // Update the state with the fetched items
-    //   } catch (error) {
-    //     console.error('Błąd przy ładowaniu przedmiotów:', error);
-    //   }
-    // };
     const loadItems = async () => {
       try {
-        const savedItems = await getItemsFromFirebase(category);
-        if (!savedItems || !Array.isArray(savedItems)) {
-          console.error(
-            'Oczekiwano tablicy przedmiotów, ale otrzymano:',
-            savedItems,
-          );
-          setItems([]);
-        } else {
-          setItems(savedItems);
+        const auth = getAuth();
+        const userId = auth.currentUser?.uid;
+
+        if (!userId) {
+          console.error('User not authenticated.');
+          return;
         }
+
+        const fetchedItems = await getItemsFromFirebase(
+          selectedCategory,
+          userId,
+        );
+        setItems(fetchedItems);
       } catch (error) {
-        console.error('Błąd przy ładowaniu przedmiotów:', error);
-        setItems([]);
+        console.error('Error loading items:', error);
       }
     };
 
     loadItems();
-  }, [category]); // Re-run whenever category changes
-
-  const handleRemoveItem = async (itemId) => {
-    try {
-      await deleteItemFromFirebase(itemId, category);
-      setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
-    } catch (error) {
-      console.error('Błąd przy usuwaniu przedmiotu:', error);
-    }
-  };
-
-  const toggleModal = () => {
-    setIsModalOpen((prevState) => !prevState);
-  };
+  }, [selectedCategory]);
 
   return (
     <section className="mt-2">
       <button
-        onClick={toggleModal}
+        onClick={() => setIsModalOpen(true)}
         className="p-2 mb-4 text-white bg-blue-500 rounded"
       >
         Dodaj przedmiot
@@ -89,51 +99,40 @@ const ItemsSection = ({ title, itemsData, category }) => {
 
       <div>
         <h3>{title}</h3>
-
-        <ul>
-          {items.map((item, index) => {
-            if (!item || !item.id || !item.stats) {
-              console.error('Nieprawidłowy przedmiot:', item);
-              return null; // Pomijamy nieprawidłowy przedmiot
-            }
-
-            const uniqueKey = item.id || `item-${index}`;
-            return (
-              <li
-                key={uniqueKey}
-                className="flex items-center p-2 space-x-4 rounded-md bg-slate-50"
+        <ul className="mt-4">
+          {items.map((item) => (
+            <li
+              key={item.id}
+              className="flex items-center p-2 space-x-4 rounded-md bg-slate-50"
+            >
+              <img
+                src={item.image || '/placeholder.jpg'}
+                alt={item.name || 'Nieznany przedmiot'}
+                className="w-16 h-16"
+              />
+              <div>
+                <p className="text-xl font-medium">{item.name}</p>
+                <p className="text-base font-semibold">
+                  Siła: {item.stats?.strength || 0}
+                </p>
+                <p className="text-base">Moc: {item.stats?.power || 0}</p>
+              </div>
+              <button
+                onClick={() => handleRemoveItem(item.id)}
+                className="p-2 ml-auto text-white bg-red-500 rounded"
               >
-                <img
-                  src={item.image || '/placeholder.jpg'}
-                  alt={item.name || 'Nieznany przedmiot'}
-                  className="w-16 h-16"
-                />
-                <div>
-                  <p className="text-xl font-medium">
-                    {item.name || 'Brak nazwy'}
-                  </p>
-                  <p className="text-base font-semibold">
-                    Siła: {item.stats?.strength || 0}
-                  </p>
-                  <p className="text-base">Moc: {item.stats?.power || 0}</p>
-                </div>
-                <button
-                  onClick={() => handleRemoveItem(item.id)}
-                  className="p-2 ml-auto text-white bg-red-500 rounded"
-                >
-                  Usuń produkt
-                </button>
-              </li>
-            );
-          })}
+                Usuń produkt
+              </button>
+            </li>
+          ))}
         </ul>
       </div>
 
       <ItemList
         isOpen={isModalOpen}
-        onClose={toggleModal}
-        items={itemsData || []}
-        onAddItem={handleAddItem}
+        onClose={() => setIsModalOpen(false)}
+        items={itemsData}
+        onAddItem={(item) => handleAddItem(item, selectedCategory)}
       />
     </section>
   );
