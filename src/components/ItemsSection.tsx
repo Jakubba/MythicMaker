@@ -41,12 +41,14 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
       const newItem = {
         ...item,
         id: itemId,
-        name: item.name,
         image: item.image || '/placeholder.jpg',
         stats: item.stats || { strength: 0, power: 0 },
       };
 
+      // Add item to Firebase
       await addItemToFirebase(newItem, category);
+
+      // Update state with new item
       setItems((prevItems) => [...prevItems, newItem]);
       setIsModalOpen(false);
     } catch (error) {
@@ -73,6 +75,8 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
         const auth = getAuth();
         const userId = auth.currentUser?.uid;
 
+        console.log('Pobrany userId:', userId);
+
         if (!userId) {
           console.error('User not authenticated.');
           return;
@@ -82,14 +86,18 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
           selectedCategory,
           userId,
         );
-        setItems(fetchedItems || []);
+        console.log('Pobrane przedmioty w useEffect:', fetchedItems);
+
+        if (fetchedItems) {
+          setItems(fetchedItems);
+        }
       } catch (error) {
         console.error('Error loading items:', error);
       }
     };
 
     loadItems();
-  }, [selectedCategory]);
+  }, [selectedCategory]); // Dependency array for loading items based on category change
 
   return (
     <section className="mt-2">
@@ -103,38 +111,42 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
       <div>
         <h3>{title}</h3>
         <ul className="mt-4">
-          {items.map((item) => (
-            <li
-              key={item.id}
-              className="flex items-center p-2 space-x-4 rounded-md bg-slate-50"
-            >
-              <img
-                src={item.image || '/placeholder.jpg'}
-                alt={item.name || 'Nieznany przedmiot'}
-                className="w-16 h-16"
-              />
-              <div>
-                <p className="text-xl font-medium">{item.name}</p>
-                <p className="text-base font-semibold">
-                  Siła: {item.stats?.strength || 0}
-                </p>
-                <p className="text-base">Moc: {item.stats?.power || 0}</p>
-              </div>
-              <button
-                onClick={() => handleRemoveItem(item.id)}
-                className="p-2 ml-auto text-white bg-red-500 rounded"
+          {items.length === 0 ? (
+            <p>Brak przedmiotów w tej kategorii.</p>
+          ) : (
+            items.map((item) => (
+              <li
+                key={item.id}
+                className="flex items-center p-2 space-x-4 rounded-md bg-slate-50"
               >
-                Usuń produkt
-              </button>
-            </li>
-          ))}
+                <img
+                  src={item.image || '/placeholder.jpg'}
+                  alt={item.name || 'Nieznany przedmiot'}
+                  className="w-16 h-16"
+                />
+                <div>
+                  <p className="text-xl font-medium">{item.name}</p>
+                  <p className="text-base font-semibold">
+                    Siła: {item.stats?.strength || 0}
+                  </p>
+                  <p className="text-base">Moc: {item.stats?.power || 0}</p>
+                </div>
+                <button
+                  onClick={() => handleRemoveItem(item.id)}
+                  className="p-2 ml-auto text-white bg-red-500 rounded"
+                >
+                  Usuń produkt
+                </button>
+              </li>
+            ))
+          )}
         </ul>
       </div>
 
       <ItemList
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        items={itemsData}
+        items={itemsData} // Assuming `itemsData` is passed correctly as props
         onAddItem={(item) => handleAddItem(item, selectedCategory)}
       />
     </section>

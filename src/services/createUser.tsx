@@ -21,9 +21,9 @@ interface UserProfile {
   skillsNotes: string;
   personalityTraits: string;
   weakness: string;
-  weapons: object[]; 
-  spells: object[]; 
-  equipment: object[]; 
+  weapons: object[];
+  spells: object[];
+  equipment: object[];
 }
 
 interface CreateUserParams {
