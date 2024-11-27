@@ -51,7 +51,7 @@ const Character = () => {
       }
 
       try {
-        const docSnap = await getDoc(doc(db, 'characters', currentUser.uid));
+        const docSnap = await getDoc(doc(db, 'users', currentUser.uid));
         if (docSnap.exists()) {
           setCharacterData(docSnap.data());
         } else {
@@ -70,7 +70,7 @@ const Character = () => {
     const saveCharacterData = async () => {
       if (currentUser) {
         try {
-          const docRef = doc(db, 'characters', currentUser.uid);
+          const docRef = doc(db, 'users', currentUser.uid);
           const docSnap = await getDoc(docRef);
           if (
             !docSnap.exists() ||
@@ -89,10 +89,7 @@ const Character = () => {
   useEffect(() => {
     const uploadImage = async () => {
       if (image) {
-        const imageRef = ref(
-          storage,
-          `images/${currentUser.uid}/${image.name}`,
-        );
+        const imageRef = ref(storage, `images/${currentUser.uid}/${file.name}`);
         try {
           await uploadBytes(imageRef, image);
           const imageURL = await getDownloadURL(imageRef);
@@ -108,7 +105,7 @@ const Character = () => {
   const handleLogout = async () => {
     try {
       if (currentUser) {
-        await setDoc(doc(db, 'characters', currentUser.uid), characterData);
+        await setDoc(doc(db, 'users', currentUser.uid), characterData);
       }
       logout();
       navigate('/login');
@@ -131,22 +128,34 @@ const Character = () => {
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      const storageRef = ref(storage, `images/${currentUser.uid}/${file.name}`);
-      try {
-        await uploadBytes(storageRef, file);
-        const fileURL = await getDownloadURL(storageRef);
-        setCharacterData((prevData) => ({ ...prevData, imageURL: fileURL }));
+    if (!file) {
+      console.error('No file selected.');
+      return;
+    }
 
-        if (currentUser) {
-          await setDoc(doc(db, 'characters', currentUser.uid), {
-            ...characterData,
-            imageURL: fileURL,
-          });
-        }
-      } catch (error) {
-        console.error('Error uploading file:', error);
+    if (!currentUser) {
+      console.error('User is not authenticated.');
+      alert('Musisz być zalogowany, aby przesłać plik.');
+      return;
+    }
+
+    const storageRef = ref(storage, `images/${currentUser.uid}/${file.name}`);
+    try {
+      await uploadBytes(storageRef, file);
+      const fileURL = await getDownloadURL(storageRef);
+      console.log('File uploaded successfully:', fileURL);
+
+      setCharacterData((prevData) => ({ ...prevData, imageURL: fileURL }));
+
+      await setDoc(doc(db, 'users', currentUser.uid), {
+        ...characterData,
+        imageURL: fileURL,
+      });
+    } catch (error) {
+      if (error.code === 'storage/unauthorized') {
+        alert('Nie masz uprawnień do przesyłania plików.');
       }
+      console.error('Error uploading file:', error);
     }
   };
 

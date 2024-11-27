@@ -29,26 +29,31 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>(category);
 
-  // Handle adding an item to Firebase
   const handleAddItem = async (item: Item, category: string) => {
     try {
+      if (!item.name || typeof item.name !== 'string') {
+        throw new Error(
+          'Invalid item: "name" is required and must be a string.',
+        );
+      }
+
       const itemId = uuidv4();
       const newItem = {
         ...item,
         id: itemId,
+        name: item.name,
         image: item.image || '/placeholder.jpg',
         stats: item.stats || { strength: 0, power: 0 },
       };
 
       await addItemToFirebase(newItem, category);
       setItems((prevItems) => [...prevItems, newItem]);
-      setIsModalOpen(false); // Close modal after adding item
+      setIsModalOpen(false);
     } catch (error) {
       console.error('Error adding item:', error);
     }
   };
 
-  // Handle removing an item from Firebase
   const handleRemoveItem = async (itemId: string) => {
     try {
       await deleteItemFromFirebase(itemId, selectedCategory);
@@ -58,12 +63,10 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
     }
   };
 
-  // Handle changing the category
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
   };
 
-  // Load items when the category changes
   useEffect(() => {
     const loadItems = async () => {
       try {
@@ -79,7 +82,7 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
           selectedCategory,
           userId,
         );
-        setItems(fetchedItems);
+        setItems(fetchedItems || []);
       } catch (error) {
         console.error('Error loading items:', error);
       }

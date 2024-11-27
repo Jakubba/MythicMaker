@@ -4,7 +4,11 @@ import ItemsSection from './ItemsSection';
 
 const Wizards = () => {
   return (
-    <ItemsSection title="Twoje magiczne przedmioty" itemsData={wizardsItems} />
+    <ItemsSection
+      title="Twoje magiczne przedmioty"
+      itemsData={wizardsItems}
+      category="spells"
+    />
   );
 };
 

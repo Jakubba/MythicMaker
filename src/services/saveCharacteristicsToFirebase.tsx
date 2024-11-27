@@ -34,7 +34,10 @@ export const saveCharacteristicsToFirebase = async (
       throw new Error('User ID is required');
     }
 
-    const docRef = doc(db, 'characters', userId);
+    console.log('Preparing to save data for user ID:', userId);
+    console.log('Characteristics:', characteristics);
+
+    const docRef = doc(db, 'users', userId);
 
     await setDoc(docRef, { characteristics }, { merge: true });
 

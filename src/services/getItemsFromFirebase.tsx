@@ -15,8 +15,22 @@ export const getItemsFromFirebase = async (
 
     const userId = currentUser.uid;
 
-    const categoriesRef = collection(db, 'users', userId, 'categories');
-    const categoryRef = collection(categoriesRef, category, 'products');
+    if (!userId) {
+      throw new Error('User ID is not defined.');
+    }
+
+    if (!category) {
+      throw new Error('Category is not defined.');
+    }
+
+    const categoryRef = collection(
+      db,
+      'users',
+      userId,
+      'categories',
+      category,
+      'products',
+    );
 
     const snapshot = await getDocs(categoryRef);
 

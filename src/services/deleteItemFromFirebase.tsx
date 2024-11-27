@@ -1,8 +1,10 @@
 import { db } from '../firebase';
-import { doc, deleteDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
-export const deleteItemFromFirebase = async (category, itemId) => {
+import { arrayRemove } from 'firebase/firestore';
+
+export const deleteItemFromFirebase = async (category: string, item: Item) => {
   try {
     const auth = getAuth();
     const currentUser = auth.currentUser;
@@ -12,22 +14,15 @@ export const deleteItemFromFirebase = async (category, itemId) => {
     }
 
     const userId = currentUser.uid;
+    const userRef = doc(db, 'users', userId);
 
-    const itemRef = doc(
-      db,
-      'users',
-      userId,
-      'categories',
-      category,
-      'products',
-      itemId,
-    );
+    await updateDoc(userRef, {
+      [category]: arrayRemove(item),
+    });
 
-    await deleteDoc(itemRef);
-
-    console.log(`Przedmiot o ID ${itemId} usunięty z kategorii: ${category}`);
+    console.log(`Item removed from category ${category}:`, item);
   } catch (error) {
-    console.error('Błąd przy usuwaniu przedmiotu:', error);
+    console.error('Error removing item from Firebase:', error);
     throw error;
   }
 };

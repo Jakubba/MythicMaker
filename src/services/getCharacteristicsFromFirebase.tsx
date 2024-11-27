@@ -29,7 +29,7 @@ export const getCharacteristicsFromFirebase = async (
   userId: string,
 ): Promise<Characteristics> => {
   try {
-    const docRef = doc(db, 'characters', userId);
+    const docRef = doc(db, 'users', userId);
 
     const docSnap = await getDoc(docRef);
 

@@ -13,6 +13,10 @@ export const addItemToFirebase = async (
   category: string,
 ): Promise<string> => {
   try {
+    if (!item.name) {
+      throw new Error('Item must have a name');
+    }
+
     const auth = getAuth();
     const currentUser = auth.currentUser;
 
@@ -21,7 +25,6 @@ export const addItemToFirebase = async (
     }
 
     const userId = currentUser.uid;
-
     const userRef = doc(db, 'users', userId);
 
     await updateDoc(userRef, {
