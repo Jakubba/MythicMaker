@@ -1,36 +1,7 @@
 import { auth, db } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc, updateDoc, arrayUnion } from 'firebase/firestore';
-
-interface UserProfile {
-  name: string;
-  race: string;
-  age: number;
-  class: string;
-  level: number;
-  description: string;
-  health: number;
-  strength: number;
-  dexterity: number;
-  endurance: number;
-  intelligence: number;
-  wisdom: number;
-  charisma: number;
-  imageURL: string;
-  notes: string;
-  skillsNotes: string;
-  personalityTraits: string;
-  weakness: string;
-  weapons: object[];
-  spells: object[];
-  equipment: object[];
-}
-
-interface CreateUserParams {
-  email: string;
-  password: string;
-  profile: UserProfile;
-}
+import { CreateUserParams } from '../types/interface';
 
 export const createUser = async ({
   email,

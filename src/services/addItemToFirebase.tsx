@@ -1,26 +1,51 @@
+// import { db } from '../firebase';
+// import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
+// import { getAuth } from 'firebase/auth';
+// import { Item } from '../types/interface';
+
+// export const addItemToFirebase = async (
+//   item: Item,
+//   category: string,
+// ): Promise<string> => {
+//   try {
+//     console.log('Attempting to add item:', item);
+//     console.log('Category:', category);
+//     console.log('User ID:', userId);
+
+//     if (!item.name) {
+//       throw new Error('Item must have a name');
+//     }
+
+//     const auth = getAuth();
+//     const currentUser = auth.currentUser;
+
+//     const userId = currentUser.uid;
+//     const userRef = doc(db, 'users', userId);
+
+//     console.log('User authenticated. UserID:', userId);
+//     console.log('Document reference for user:', userRef.path);
+
+//     await updateDoc(userRef, {
+//       [category]: arrayUnion(item),
+//     });
+
+//     console.log(
+//       `Item added to category "${category}" for user ${userId}:`,
+//       item,
+//     );
+
+//     return item.id;
+//   } catch (error) {
+//     console.error('Error adding item to Firebase:', error);
+//     throw error;
+//   }
+// };
 import { db } from '../firebase';
-import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { collection, addDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
-interface Item {
-  id: string;
-  name: string;
-  [key: string]: any;
-}
-
-export const addItemToFirebase = async (
-  item: Item,
-  category: string,
-): Promise<string> => {
+export const addItemToFirebase = async (item, category) => {
   try {
-    // Logowanie danych wejściowych
-    console.log('Attempting to add item:', item);
-    console.log('Category:', category);
-
-    if (!item.name) {
-      throw new Error('Item must have a name');
-    }
-
     const auth = getAuth();
     const currentUser = auth.currentUser;
 
@@ -29,22 +54,34 @@ export const addItemToFirebase = async (
     }
 
     const userId = currentUser.uid;
-    const userRef = doc(db, 'users', userId);
 
-    // Logowanie ID użytkownika i referencji do dokumentu
-    console.log('User authenticated. UserID:', userId);
-    console.log('Document reference for user:', userRef.path);
+    if (!category) {
+      throw new Error('Category not provided');
+    }
 
-    // Dodanie przedmiotu do odpowiedniej kategorii w bazie danych
-    await updateDoc(userRef, {
-      [category]: arrayUnion(item), // Dodanie przedmiotu do tablicy w kategorii
-    });
+    const categoryRef = collection(
+      db,
+      'users',
+      userId,
+      'categories',
+      category,
+      'products',
+    );
 
-    console.log(`Item added to category "${category}" for user ${userId}:`, item);
+    // Logowanie próby dodania przedmiotu
+    console.log('Attempting to add item:', item);
+    console.log('Category:', category);
+    console.log('User ID:', userId);
 
-    return item.id;
+    // Dodajemy przedmiot do Firebase
+    await addDoc(categoryRef, item);
+
+    // Logowanie po udanym dodaniu
+    console.log(
+      `Item added to category "${category}" for user ${userId}:`,
+      item,
+    );
   } catch (error) {
     console.error('Error adding item to Firebase:', error);
-    throw error;
   }
 };

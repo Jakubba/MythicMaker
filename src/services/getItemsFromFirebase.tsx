@@ -4,21 +4,9 @@ import { getAuth } from 'firebase/auth';
 
 export const getItemsFromFirebase = async (
   category: string,
+  userId: string
 ): Promise<any[]> => {
   try {
-    const auth = getAuth();
-    const currentUser = auth.currentUser;
-
-    if (!currentUser) {
-      throw new Error('User not authenticated');
-    }
-
-    const userId = currentUser.uid;
-
-    if (!userId) {
-      throw new Error('User ID is not defined.');
-    }
-
     if (!category) {
       throw new Error('Category is not defined.');
     }
@@ -29,7 +17,7 @@ export const getItemsFromFirebase = async (
       userId,
       'categories',
       category,
-      'products',
+      'products'
     );
 
     const snapshot = await getDocs(categoryRef);
@@ -39,37 +27,16 @@ export const getItemsFromFirebase = async (
       return [];
     }
 
-    const items = snapshot.docs
-      .map((doc) => {
-        const data = doc.data();
-        if (!data || !data.name || !data.stats) {
-          console.warn(`Niepełne dane w produkcie o ID: ${doc.id}`, data);
-          return null;
-        }
+    const items = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+      };
+    });
 
-        return {
-          id: doc.id,
-          ...data,
-        };
-      })
-      .filter((item) => item !== null);
-
-    const ids = items.map((item) => item.id);
-    const uniqueIds = new Set(ids);
-    if (uniqueIds.size !== ids.length) {
-      console.warn('Duplikaty ID w danych:', ids);
-    }
-
-    const formattedItems = items.map((item) => ({
-      ...item,
-      weapons: Array.isArray(item.weapons) ? item.weapons : [],
-      spells: Array.isArray(item.spells) ? item.spells : [],
-      equipment: Array.isArray(item.equipment) ? item.equipment : [],
-    }));
-
-    console.log('Dane z Firebase:', formattedItems);
-
-    return formattedItems;
+    console.log('Dane z Firebase:', items);
+    return items;
   } catch (error) {
     console.error('Błąd przy pobieraniu przedmiotów:', error);
     return [];

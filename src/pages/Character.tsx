@@ -10,10 +10,10 @@ import Wizards from '../components/Wizards';
 import plus from './../assets/icons/icon-plus.png';
 import minus from './../assets/icons/icon-minus.png';
 import { stats, tabs } from './../constans/descCharakter';
+// import store from '../store';
 
 const Character = () => {
   const { logout, currentUser } = useAuth();
-  const [showListItems, setShowListItems] = useState(false);
   const navigate = useNavigate();
 
   const [characterData, setCharacterData] = useState({
@@ -116,7 +116,16 @@ const Character = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCharacterData((prevData) => ({ ...prevData, [name]: value }));
+    const newValue =
+      name.includes('level') ||
+      name.includes('health') ||
+      stats.some((stat) => stat.name === name)
+        ? isNaN(value)
+          ? 0
+          : Number(value)
+        : value;
+
+    setCharacterData((prevData) => ({ ...prevData, [name]: newValue }));
   };
 
   const handleStatChange = (stat, delta) => {
@@ -133,17 +142,15 @@ const Character = () => {
       return;
     }
 
-    if (!currentUser) {
-      console.error('User is not authenticated.');
-      alert('Musisz być zalogowany, aby przesłać plik.');
-      return;
-    }
-
     const storageRef = ref(storage, `images/${currentUser.uid}/${file.name}`);
+    console.log('Uploading file to:', storageRef.fullPath);
+
     try {
       await uploadBytes(storageRef, file);
+      console.log('File uploaded successfully.');
+
       const fileURL = await getDownloadURL(storageRef);
-      console.log('File uploaded successfully:', fileURL);
+      console.log('File URL:', fileURL);
 
       setCharacterData((prevData) => ({ ...prevData, imageURL: fileURL }));
 
@@ -151,11 +158,15 @@ const Character = () => {
         ...characterData,
         imageURL: fileURL,
       });
+
+      console.log('Dane zaktualizowane pomyślnie.');
     } catch (error) {
+      console.error('Error during file upload:', error);
       if (error.code === 'storage/unauthorized') {
         alert('Nie masz uprawnień do przesyłania plików.');
+      } else {
+        alert('Wystąpił błąd podczas przesyłania pliku.');
       }
-      console.error('Error uploading file:', error);
     }
   };
 
@@ -180,14 +191,21 @@ const Character = () => {
                 <img
                   src={characterData.imageURL}
                   alt="Uploaded"
-                  className="absolute h-full w-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain z-[100]"
+                  className="absolute h-full w-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain z-[12]"
                 />
               )}
               <input
-                className="absolute w-max p-2 rounded top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
+                className="absolute w-max p-2 rounded bottom-[10px] right-[10px] z-20 opacity-0 cursor-pointer"
                 type="file"
+                id="fileInput"
                 onChange={handleImageUpload}
               />
+              <label
+                for="fileInput"
+                className="absolute bottom-[10px] right-[10px] p-2 bg-blue-500 text-white rounded cursor-pointer"
+              >
+                Obraz
+              </label>
             </div>
             <div className="justify-center w-1/2">
               <table>
@@ -251,7 +269,9 @@ const Character = () => {
                           className="w-[80px] text-lg text-center bg-transparent text-white "
                           type="text"
                           name={name}
-                          value={characterData[name]}
+                          value={
+                            isNaN(characterData[name]) ? 0 : characterData[name]
+                          }
                           onChange={handleInputChange}
                         />
                         <button

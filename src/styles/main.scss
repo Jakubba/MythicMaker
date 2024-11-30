@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import './base/global.scss';
 @layer components {
   .customGlass {
     background: rgba(236, 236, 236, 0.2);

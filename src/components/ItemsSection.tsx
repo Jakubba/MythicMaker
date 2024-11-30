@@ -5,24 +5,16 @@ import { getItemsFromFirebase } from '../services/getItemsFromFirebase';
 import ItemList from './ItemList';
 import { getAuth } from 'firebase/auth';
 import { v4 as uuidv4 } from 'uuid';
-
-interface Stats {
-  strength: number;
-  power: number;
-}
-
-interface Item {
-  id: string;
-  name: string;
-  image?: string;
-  stats?: Stats;
-}
+import { Item } from '../types/interface';
 
 interface ItemsSectionProps {
   title: string;
   itemsData: Item[];
   category: string;
 }
+
+const DEFAULT_IMAGE = '/placeholder.jpg';
+const DEFAULT_STATS = { strength: 0, power: 0 };
 
 const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
   const [items, setItems] = useState<Item[]>([]);
@@ -41,14 +33,12 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
       const newItem = {
         ...item,
         id: itemId,
-        image: item.image || '/placeholder.jpg',
-        stats: item.stats || { strength: 0, power: 0 },
+        image: item.image || DEFAULT_IMAGE,
+        stats: item.stats || DEFAULT_STATS,
       };
 
-      // Add item to Firebase
       await addItemToFirebase(newItem, category);
 
-      // Update state with new item
       setItems((prevItems) => [...prevItems, newItem]);
       setIsModalOpen(false);
     } catch (error) {
@@ -69,13 +59,41 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
     setSelectedCategory(category);
   };
 
+  // useEffect(() => {
+  //   const loadItems = async () => {
+  //     try {
+  //       const auth = getAuth();
+  //       const userId = auth.currentUser?.uid;
+
+  //       console.log('Pobrany userId:', userId);
+
+  //       if (!userId) {
+  //         console.error('User not authenticated.');
+  //         return;
+  //       }
+
+  //       const fetchedItems = await getItemsFromFirebase(
+  //         selectedCategory,
+  //         userId,
+  //       );
+  //       console.log('Pobrane przedmioty w useEffect:', fetchedItems);
+
+  //       if (fetchedItems) {
+  //         setItems(fetchedItems);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error loading items:', error);
+  //     }
+  //   };
+
+  //   loadItems();
+  // }, [selectedCategory]);
+
   useEffect(() => {
     const loadItems = async () => {
       try {
         const auth = getAuth();
         const userId = auth.currentUser?.uid;
-
-        console.log('Pobrany userId:', userId);
 
         if (!userId) {
           console.error('User not authenticated.');
@@ -86,18 +104,21 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
           selectedCategory,
           userId,
         );
-        console.log('Pobrane przedmioty w useEffect:', fetchedItems);
+
+        console.log('Pobrane przedmioty:', fetchedItems);
 
         if (fetchedItems) {
           setItems(fetchedItems);
         }
       } catch (error) {
-        console.error('Error loading items:', error);
+        console.error('Błąd przy ładowaniu przedmiotów:', error);
       }
     };
 
-    loadItems();
-  }, [selectedCategory]); // Dependency array for loading items based on category change
+    if (selectedCategory) {
+      loadItems();
+    }
+  }, [selectedCategory]);
 
   return (
     <section className="mt-2">
@@ -111,7 +132,7 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
       <div>
         <h3>{title}</h3>
         <ul className="mt-4">
-          {items.length === 0 ? (
+          {!items?.length === 0 ? (
             <p>Brak przedmiotów w tej kategorii.</p>
           ) : (
             items.map((item) => (
