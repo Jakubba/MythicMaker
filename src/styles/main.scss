@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import './base/global.scss';
 @layer components {
   .customGlass {
     background: rgba(236, 236, 236, 0.2);
@@ -14,7 +13,7 @@
 }
 
 .loader {
-  border-top-color: #3498db;
+  border-top-color: #053b5f;
   animation: spin 1s linear infinite;
 }
 @keyframes spin {

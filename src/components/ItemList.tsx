@@ -1,6 +1,12 @@
 import React from 'react';
+import { ItemListProps } from '../types/interface';
 
-const ItemList = ({ isOpen, onClose, items, onAddItem }) => {
+const ItemList: React.FC<ItemListProps> = ({
+  isOpen,
+  onClose,
+  items,
+  onAddItem,
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -25,7 +31,7 @@ const ItemList = ({ isOpen, onClose, items, onAddItem }) => {
         <ul className="flex flex-wrap justify-start gap-4">
           {items.map((item) => (
             <li
-              key={item.id} 
+              key={item.id}
               className="relative w-full md:w-[calc(25%-1rem)] bg-gray-100 rounded-lg shadow-md p-4"
             >
               <img

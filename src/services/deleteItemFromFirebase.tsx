@@ -1,14 +1,4 @@
-export enum Categories {
-  SPELLS = 'spells',
-  WEAPONS = 'weapons',
-  ITEMS = 'items',
-}
-
-export type CategoryTypes =
-  | Categories.SPELLS
-  | Categories.WEAPONS
-  | Categories.ITEMS;
-
+import { CategoryTypes } from '../types/CategoryTypes';
 import { db } from '../firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';

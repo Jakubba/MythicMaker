@@ -52,7 +52,7 @@ const LoginPage = () => {
 
   return (
     <AuthenticationGuard>
-      <div className="flex flex-col items-center w-full h-screen">
+      <div className="flex flex-col items-center w-full h-screen bg-gray-800">
         {loading ? (
           <Preloader />
         ) : (

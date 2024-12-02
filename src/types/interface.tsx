@@ -1,11 +1,25 @@
 export interface Item {
-  id: number;
-  name: string;
-  image: string;
-  stats: {
-    strength: number;
-    power: number;
-  };
+  id: string;
+  name?: string;
+  image?: string;
+  stats?: ItemStats;
+}
+interface ItemStats {
+  strength?: number;
+  power?: number;
+}
+
+export interface ItemListProps {
+  isOpen: boolean;
+  onClose: () => void;
+  items: Item[];
+  onAddItem: (item: Item) => void;
+}
+
+export interface ItemsSectionProps {
+  title: string;
+  itemsData: Item[];
+  category: string;
 }
 export interface Characteristics {
   name?: string;

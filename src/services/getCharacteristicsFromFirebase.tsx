@@ -6,7 +6,7 @@ export const getCharacteristicsFromFirebase = async (
   userId: string,
 ): Promise<Characteristics> => {
   const defaultCharacteristics: Characteristics = {
-    age: '',
+    age: 0,
     charisma: 0,
     class: '',
     description: '',
@@ -14,7 +14,7 @@ export const getCharacteristicsFromFirebase = async (
     endurance: 0,
     health: 0,
     intelligence: 0,
-    level: '',
+    level: 0,
     name: '',
     notes: '',
     personalityTraits: '',
@@ -23,9 +23,9 @@ export const getCharacteristicsFromFirebase = async (
     strength: 0,
     weakness: '',
     wisdom: 0,
-    weapons: [],
-    spells: [],
-    equipment: [],
+    // weapons: [],
+    // spells: [],
+    // equipment: [],
     imageURL: '',
   };
 

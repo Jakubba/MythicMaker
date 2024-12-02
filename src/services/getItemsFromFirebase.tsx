@@ -1,10 +1,9 @@
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
 
 export const getItemsFromFirebase = async (
   category: string,
-  userId: string
+  userId: string,
 ): Promise<any[]> => {
   try {
     if (!category) {
@@ -17,7 +16,7 @@ export const getItemsFromFirebase = async (
       userId,
       'categories',
       category,
-      'products'
+      'products',
     );
 
     const snapshot = await getDocs(categoryRef);
@@ -35,7 +34,6 @@ export const getItemsFromFirebase = async (
       };
     });
 
-    console.log('Dane z Firebase:', items);
     return items;
   } catch (error) {
     console.error('Błąd przy pobieraniu przedmiotów:', error);

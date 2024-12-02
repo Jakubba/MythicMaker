@@ -1,14 +1,23 @@
 import { db } from '../firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, DocumentSnapshot } from 'firebase/firestore';
 
-export const saveNotesToFirebase = async (notes) => {
+interface NoteData {
+  content: string;
+}
+
+export const saveNotesToFirebase = async (
+  notes: string,
+): Promise<string | undefined> => {
   try {
     const docRef = doc(db, 'categories', 'notes');
 
     await setDoc(docRef, { content: notes });
 
-    console.log('Notatki zapisane pomyślnie.');
+    const docSnap: DocumentSnapshot = await getDoc(docRef);
+
+    return docSnap.exists() ? (docSnap.data() as NoteData).content : '';
   } catch (error) {
     console.error('Błąd przy zapisywaniu notatek:', error);
+    return undefined;
   }
 };
