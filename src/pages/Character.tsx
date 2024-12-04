@@ -13,7 +13,6 @@ import { stats, tabs } from './../constans/descCharakter';
 
 const Character = () => {
   const { logout, currentUser } = useAuth();
-  const [showListItems, setShowListItems] = useState(false);
   const navigate = useNavigate();
 
   const [characterData, setCharacterData] = useState({
@@ -31,6 +30,13 @@ const Character = () => {
     wisdom: 0,
     charisma: 0,
     imageURL: '',
+    notes: '',
+    skillsNotes: '',
+    personalityTraits: '',
+    weakness: '',
+    weapons: [],
+    spells: [],
+    equipment: [],
   });
 
   const [activeTab, setActiveTab] = useState('description');
@@ -44,7 +50,7 @@ const Character = () => {
       }
 
       try {
-        const docSnap = await getDoc(doc(db, 'characters', currentUser.uid));
+        const docSnap = await getDoc(doc(db, 'users', currentUser.uid));
         if (docSnap.exists()) {
           setCharacterData(docSnap.data());
         } else {
@@ -52,7 +58,7 @@ const Character = () => {
         }
       } catch (error) {
         console.error('Nie udało się załadować danych postaci:', error);
-        alert('Nie udało się załadować danych postaci.');
+        // alert('Nie udało się załadować danych postaci.');
       }
     };
 
@@ -63,7 +69,7 @@ const Character = () => {
     const saveCharacterData = async () => {
       if (currentUser) {
         try {
-          const docRef = doc(db, 'characters', currentUser.uid);
+          const docRef = doc(db, 'users', currentUser.uid);
           const docSnap = await getDoc(docRef);
           if (
             !docSnap.exists() ||
@@ -82,10 +88,7 @@ const Character = () => {
   useEffect(() => {
     const uploadImage = async () => {
       if (image) {
-        const imageRef = ref(
-          storage,
-          `images/${currentUser.uid}/${image.name}`,
-        );
+        const imageRef = ref(storage, `images/${currentUser.uid}/${file.name}`);
         try {
           await uploadBytes(imageRef, image);
           const imageURL = await getDownloadURL(imageRef);
@@ -101,7 +104,7 @@ const Character = () => {
   const handleLogout = async () => {
     try {
       if (currentUser) {
-        await setDoc(doc(db, 'characters', currentUser.uid), characterData);
+        await setDoc(doc(db, 'users', currentUser.uid), characterData);
       }
       logout();
       navigate('/login');
@@ -110,9 +113,22 @@ const Character = () => {
     }
   };
 
+  const processValue = (name, value) => {
+    const includesKeywords = name.includes('level') || name.includes('health');
+    const containsStatName = stats.some((stat) => stat.name === name);
+
+    if (includesKeywords || containsStatName) {
+      return isNaN(value) ? 0 : +value;
+    }
+
+    return value;
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCharacterData((prevData) => ({ ...prevData, [name]: value }));
+    const newValue = processValue(name, value);
+
+    setCharacterData((prevData) => ({ ...prevData, [name]: newValue }));
   };
 
   const handleStatChange = (stat, delta) => {
@@ -124,65 +140,92 @@ const Character = () => {
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      const storageRef = ref(storage, `images/${currentUser.uid}/${file.name}`);
-      try {
-        await uploadBytes(storageRef, file);
-        const fileURL = await getDownloadURL(storageRef);
-        setCharacterData((prevData) => ({ ...prevData, imageURL: fileURL }));
-        if (currentUser) {
-          await setDoc(doc(db, 'characters', currentUser.uid), {
-            ...characterData,
-            imageURL: fileURL,
-          });
-        }
-      } catch (error) {
-        console.error('Error uploading file:', error);
+    if (!file) {
+      console.error('No file selected.');
+      return;
+    }
+
+    const storageRef = ref(storage, `images/${currentUser.uid}/${file.name}`);
+    console.log('Uploading file to:', storageRef.fullPath);
+
+    try {
+      await uploadBytes(storageRef, file);
+      console.log('File uploaded successfully.');
+
+      const fileURL = await getDownloadURL(storageRef);
+      console.log('File URL:', fileURL);
+
+      setCharacterData((prevData) => ({ ...prevData, imageURL: fileURL }));
+
+      await setDoc(doc(db, 'users', currentUser.uid), {
+        ...characterData,
+        imageURL: fileURL,
+      });
+
+      console.log('Dane zaktualizowane pomyślnie.');
+    } catch (error) {
+      console.error('Error during file upload:', error);
+      if (error.code === 'storage/unauthorized') {
+        alert('Nie masz uprawnień do przesyłania plików.');
+      } else {
+        alert('Wystąpił błąd podczas przesyłania pliku.');
       }
     }
   };
+  const displayInputValue = (name: string): number | string => {
+    const value = characterData[name as keyof typeof characterData];
+
+    return isNaN(Number(value)) ? 0 : value;
+  };
 
   return (
-    <div>
-      <div className="flex justify-end p-2 bg-slate-600">
+    <div className="bg-cardGradient">
+      <div className="flex justify-end p-2">
         <button
           onClick={handleLogout}
-          className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+          className="px-4 py-2 font-bold text-gray-800 bg-white rounded hover:bg-gray-800 hover:text-white"
         >
           Wyloguj
         </button>
       </div>
-      <div className="flex flex-col h-screen lg:flex-row">
-        <div className="flex flex-col w-full h-full p-4 bg-slate-500 lg:w-1/2">
-          <h1 className="mb-5 text-3xl text-center text-neutral-100">
-            Witaj, {currentUser?.email || 'graczu'}!
+      <div className="flex flex-col h-screen lg:flex-row max-w-[1600px] mx-auto">
+        <div className="flex flex-col w-full h-full p-4 lg:w-1/2">
+          <h1 className="py-4 mb-5 text-3xl font-semibold text-center uppercase bg-gray-600 text-neutral-100 font-tertiaryFont">
+            Witaj {currentUser?.email || 'graczu'}
           </h1>
-          <div className="flex w-full">
-            <div className="relative w-1/2 mb-2 bg-slate-600">
+          <div className="flex flex-wrap w-full mb-4">
+            <div className="relative w-1/2 aspect-square max-h-[380px]">
               {characterData.imageURL && (
                 <img
                   src={characterData.imageURL}
                   alt="Uploaded"
-                  className="absolute h-full w-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain z-[100]"
+                  className="absolute object-cover w-full h-full transform -translate-x-1/2 -translate-y-1/2 md:object-contain top-1/2 left-1/2 z-12"
                 />
               )}
               <input
-                className="absolute w-max p-2 rounded top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
+                className="absolute w-max p-2  bottom-[10px] right-[10px] z-20 opacity-0 cursor-pointer peer"
                 type="file"
+                id="fileInput"
                 onChange={handleImageUpload}
               />
+              <label
+                htmlFor="fileInput"
+                className="absolute bottom-[10px] right-[10px] p-2 bg-gray-800  text-white cursor-pointer peer-hover:bg-gray-100 peer-hover:text-gray-600"
+              >
+                Obraz
+              </label>
             </div>
             <div className="justify-center w-1/2">
-              <table>
+              <table className="w-full max-w-full">
                 <tbody>
                   {['name', 'race', 'age', 'class', 'level'].map((field) => (
-                    <tr key={field}>
-                      <th className="px-4 py-4 text-xl text-left text-white capitalize">
+                    <tr key={field} className="mb-6 rounded rounded-r-lg">
+                      <th className="px-4 py-2 text-xl text-left text-white capitalize bg-gray-600">
                         {field}
                       </th>
-                      <td className="p-2 text-xl ">
+                      <td className="text-xl ">
                         <input
-                          className="w-full p-2 border rounded bg-slate-600 border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                          className="box-border w-full p-2 text-white bg-gray-600 border rounded-r-lg h-2-full border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-500"
                           type="text"
                           name={field}
                           value={characterData[field]}
@@ -210,15 +253,15 @@ const Character = () => {
                 name="description"
                 value={characterData.description}
                 onChange={handleInputChange}
-                className="w-full h-40"
+                className="w-full h-40 p-4 text-white bg-transparent bg-gray-600 border rounded resize-none border-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-500"
                 placeholder="Opis postaci..."
               />
             ) : (
-              <table className="w-full border border-solid border-slate-600 border-10">
+              <table className="w-full bg-slate-500 border-10">
                 <tbody>
                   {stats.map(({ name, label }) => (
                     <tr className="flex items-center mt-2 mb-2" key={name}>
-                      <th className="w-[150px] text-xl">{label}</th>
+                      <th className="w-[150px] text-white">{label}</th>
                       <td className="flex w-[250px]">
                         <button
                           className="w-[50px] h-[50px] opacity-50 hover:opacity-100"
@@ -234,7 +277,7 @@ const Character = () => {
                           className="w-[80px] text-lg text-center bg-transparent text-white "
                           type="text"
                           name={name}
-                          value={characterData[name]}
+                          value={displayInputValue(name)}
                           onChange={handleInputChange}
                         />
                         <button
@@ -255,11 +298,11 @@ const Character = () => {
             )}
           </div>
         </div>
-        <div className="flex flex-col w-full h-full p-4 bg-slate-600 lg:w-1/2">
-          <div className="flex">
+        <div className="flex flex-col w-full h-full p-4 lg:w-1/2">
+          <div className="flex flex-wrap">
             {tabs.slice(2).map((tab) => (
               <button
-                className="block p-2 border border-gray-600 bg-slate-500 hover:bg-slate-400 active:bg-slate-300"
+                className="block px-4 py-2 text-white uppercase border border-gray-600 px-font-semibold bg-slate-500 hover:bg-slate-400 active:bg-slate-300"
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
               >
@@ -273,23 +316,37 @@ const Character = () => {
             {activeTab === 'equipment' && <Equipment />}
             {activeTab === 'notes' && (
               <textarea
-                className="w-full h-full mt-4 min-h-40"
+                name="notes"
+                value={characterData.notes}
+                onChange={handleInputChange}
+                className="w-full h-full p-2 mt-4 text-white bg-transparent bg-gray-600 resize-none min-h-40 focus:outline-none focus:ring-2 focus:ring-slate-500"
                 placeholder="Notatki ..."
                 style={{ resize: 'none' }}
               />
             )}
             {activeTab === 'characteristics' && (
               <div className="mt-4">
-                {['Umiejętności', 'Cechy osobowości', 'Słabości'].map(
-                  (label) => (
-                    <textarea
-                      key={label}
-                      className="w-full h-40 mb-5"
-                      placeholder={label}
-                      style={{ resize: 'none' }}
-                    />
-                  ),
-                )}
+                <textarea
+                  name="skillsNotes"
+                  value={characterData.skillsNotes}
+                  onChange={handleInputChange}
+                  className="w-full h-40 p-2 mb-5 text-white bg-transparent bg-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-slate-500"
+                  placeholder="Umiejętności"
+                />
+                <textarea
+                  name="personalityTraits"
+                  value={characterData.personalityTraits}
+                  onChange={handleInputChange}
+                  className="w-full h-40 p-2 mb-5 text-white bg-transparent bg-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-slate-500"
+                  placeholder="Cechy osobowości"
+                />
+                <textarea
+                  name="weakness"
+                  value={characterData.weakness}
+                  onChange={handleInputChange}
+                  className="w-full h-40 p-2 mb-5 text-white bg-transparent bg-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-slate-500"
+                  placeholder="Słabości"
+                />
               </div>
             )}
           </div>

@@ -1,12 +1,42 @@
-export const addItemToFirebase = async (item, category) => {
+import { db } from '../firebase';
+import { collection, addDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { Item } from '../types/interface';
+
+export const addItemToFirebase = async (
+  item: Item,
+  category: string,
+): Promise<void> => {
   try {
-    const categoryRef = firebase
-      .firestore()
-      .collection('categories')
-      .doc(category);
-    await categoryRef.collection('products').add(item);
-    console.log(`Przedmiot dodany do kategorii: ${category}`);
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+
+    if (!currentUser) {
+      throw new Error('User not authenticated');
+    }
+
+    const userId = currentUser.uid;
+
+    if (!category) {
+      throw new Error('Category not provided');
+    }
+
+    const categoryRef = collection(
+      db,
+      'users',
+      userId,
+      'categories',
+      category,
+      'products',
+    );
+
+    await addDoc(categoryRef, item);
+
+    console.log(
+      `Item added to category "${category}" for user ${userId}:`,
+      item,
+    );
   } catch (error) {
-    console.error('Błąd przy dodawaniu przedmiotu:', error);
+    console.error('Error adding item to Firebase:', error);
   }
 };

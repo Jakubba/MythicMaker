@@ -3,79 +3,124 @@ import { addItemToFirebase } from '../services/addItemToFirebase';
 import { deleteItemFromFirebase } from '../services/deleteItemFromFirebase';
 import { getItemsFromFirebase } from '../services/getItemsFromFirebase';
 import ItemList from './ItemList';
-import { i } from 'vite/dist/node/types.d-aGj9QkWt';
+import { getAuth } from 'firebase/auth';
+import { v4 as uuidv4 } from 'uuid';
+import { Item, ItemsSectionProps } from '../types/interface';
 
-const ItemsSection = ({ title, itemsData }) => {
-  const [items, setItems] = useState([]);
+const DEFAULT_IMAGE = '/placeholder.jpg';
+const DEFAULT_STATS = { strength: 0, power: 0 };
+
+const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
+  const [items, setItems] = useState<Item[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>(category);
 
-  const handleAddItem = (item) => {
-    const updatedItems = [...items, item];
-    setItems(updatedItems);
-    addItemToFirebase(item);
-    setIsModalOpen(false);
-  };
-
-  const handleRemoveItem = async (itemId) => {
+  const handleAddItem = async (item: Item, category: string) => {
     try {
-      await deleteItemFromFirebase(itemId);
-      const updatedItems = items.filter((item) => item.id !== itemId);
-      setItems(updatedItems);
+      if (!item.name || typeof item.name !== 'string') {
+        throw new Error(
+          'Invalid item: "name" is required and must be a string.',
+        );
+      }
+
+      const itemId = uuidv4();
+      const newItem = {
+        ...item,
+        id: itemId,
+        image: item.image || DEFAULT_IMAGE,
+        stats: item.stats || DEFAULT_STATS,
+      };
+
+      await addItemToFirebase(newItem, category);
+
+      setItems((prevItems) => [...prevItems, newItem]);
+      setIsModalOpen(false);
     } catch (error) {
-      console.error('Błąd przy usuwaniu przedmiotu:', error);
+      console.error('Error adding item:', error);
     }
   };
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
+  const handleRemoveItem = async (itemId: string) => {
+    try {
+      await deleteItemFromFirebase(itemId, selectedCategory);
+      setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+    } catch (error) {
+      console.error('Error removing item:', error);
+    }
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
   };
 
   useEffect(() => {
     const loadItems = async () => {
       try {
-        const savedItems = await getItemsFromFirebase();
-        setItems(savedItems || []);
+        const auth = getAuth();
+        const userId = auth.currentUser?.uid;
+
+        if (!userId) {
+          console.error('User not authenticated.');
+          return;
+        }
+
+        const fetchedItems = await getItemsFromFirebase(
+          selectedCategory,
+          userId,
+        );
+
+        if (fetchedItems) {
+          setItems(fetchedItems);
+        }
       } catch (error) {
         console.error('Błąd przy ładowaniu przedmiotów:', error);
       }
     };
 
-    loadItems();
-  }, []);
+    if (selectedCategory) {
+      loadItems();
+    }
+  }, [selectedCategory]);
 
   return (
     <section className="mt-2">
       <button
-        onClick={toggleModal}
-        className="p-2 mb-4 text-white bg-blue-500 rounded"
+        onClick={() => setIsModalOpen(true)}
+        className="p-2 mb-4 font-semibold text-white uppercase bg-gray-800 hover:bg-gray-500"
       >
         Dodaj przedmiot
       </button>
 
       <div>
-        <h3>{title}</h3>
-        <ul>
-          {items?.length === 0 ? (
-            <p>Nie dodałeś jeszcze żadnych przedmiotów.</p>
+        <h3 className="p-2 text-xl font-semibold text-white bg-gray-500 w-max">
+          {title}
+        </h3>
+        <ul className="mt-4">
+          {!items?.length ? (
+            <p>Brak przedmiotów w tej kategorii.</p>
           ) : (
-            items.map(({ image, name, stats, id }, index) => (
+            items.map((item) => (
               <li
-                key={id}
-                className="flex items-center p-2 space-x-4 rounded-md bg-slate-50"
+                key={item.id}
+                className="flex items-center w-full p-3 mb-2 bg-gray-300"
               >
-                <img src={image} alt={name} className="w-16 h-16" />
-                <div>
-                  <p className="text-xl font-medium">{name}</p>
+                <img
+                  src={item.image || '/placeholder.jpg'}
+                  alt={item.name || 'Nieznany przedmiot'}
+                  className="object-contain w-16 h-16 mx-4 mix-blend-multiply"
+                />
+                <div className="flex flex-col">
+                  <p className="text-xl font-medium">{item.name}</p>
                   <p className="text-base font-semibold">
-                    Siła: {stats?.strength || 'Brak danych'}
+                    Siła: {item.stats?.strength || 0}
                   </p>
-                  <p className="text-base">
-                    Moc: {stats?.power || 'Brak danych'}
+                  <p className="text-base font-semibold">
+                    Moc: {item.stats?.power || 0}
                   </p>
                 </div>
                 <button
-                  onClick={() => handleRemoveItem(id)}
-                  className="p-2 ml-auto text-white bg-red-500 rounded"
+                  onClick={() => handleRemoveItem(item.id)}
+                  className="block p-2 ml-auto text-white bg-gray-800 hover:bg-gray-600"
                 >
                   Usuń produkt
                 </button>
@@ -87,9 +132,9 @@ const ItemsSection = ({ title, itemsData }) => {
 
       <ItemList
         isOpen={isModalOpen}
-        onClose={toggleModal}
+        onClose={() => setIsModalOpen(false)}
         items={itemsData}
-        onAddItem={handleAddItem}
+        onAddItem={(item) => handleAddItem(item, selectedCategory)}
       />
     </section>
   );

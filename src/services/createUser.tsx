@@ -1,13 +1,13 @@
 import { auth, db } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { setDoc, doc } from 'firebase/firestore';
+import { setDoc, doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { CreateUserParams } from '../types/interface';
 
-interface CreateUserParams {
-  email: string;
-  password: string;
-}
-
-export const createUser = async ({ email, password }: CreateUserParams) => {
+export const createUser = async ({
+  email,
+  password,
+  profile,
+}: CreateUserParams) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -16,14 +16,21 @@ export const createUser = async ({ email, password }: CreateUserParams) => {
     );
     const user = userCredential.user;
 
-    await setDoc(doc(db, 'users', user.uid), {
-      email: email,
+    const userData = {
+      email,
       createdAt: new Date(),
-    });
+      ...profile,
+      weapons: [],
+      spells: [],
+      equipment: [],
+    };
 
-    console.log('Registered:', user);
+    await setDoc(doc(db, 'users', user.uid), userData);
+
+    console.log('Registered and profile created:', user);
     return user;
   } catch (error) {
+    console.error('Error creating user:', error);
     throw error;
   }
 };

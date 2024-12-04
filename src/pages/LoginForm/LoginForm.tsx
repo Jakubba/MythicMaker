@@ -32,7 +32,7 @@ export const LoginForm = () => {
       <InputError name="notRobot" />
       <button
         type="submit"
-        className="px-4 py-2 mt-4 font-semibold text-white rounded-lg font-secondaryFont bg-thirdColor hover:bg-fourthColor focus:outline-none focus:ring-2 focus:bg-fourthColor"
+        className="px-4 py-2 mt-4 font-semibold text-white rounded-lg bg-thirdColor font-secondaryFont opacity-80 hover:opacity-100 focus:outline-none focus:ring-2 focus:opacity-100"
         disabled={isSubmitting}
         aria-label="Zaloguj się"
         aria-live="polite"
@@ -42,7 +42,7 @@ export const LoginForm = () => {
       <div className="px-4 py-2 mt-4 text-white font-secondaryFont text-color">
         Nie masz konta?
         <Link
-          className="font-semibold font-secondaryFont text-primaryColor"
+          className="ml-2 font-bold text-white font-secondaryFont hover:text-primaryColor"
           to="/registration"
         >
           {' '}

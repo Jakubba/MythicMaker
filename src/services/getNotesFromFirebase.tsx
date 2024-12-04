@@ -1,10 +1,20 @@
-export const getNotesFromFirebase = async () => {
+import { db } from '../firebase';
+import { doc, getDoc, DocumentSnapshot } from 'firebase/firestore';
+
+interface NoteData {
+  content: string;
+}
+
+export const getNotesFromFirebase = async (): Promise<string> => {
   try {
-    const docRef = firebase.firestore().collection('categories').doc('notes');
-    const doc = await docRef.get();
-    return doc.exists ? doc.data().content : '';
+    const docRef = doc(db, 'categories', 'notes');
+
+    const docSnap: DocumentSnapshot = await getDoc(docRef);
+
+    return docSnap.exists() ? (docSnap.data() as NoteData).content : '';
   } catch (error) {
     console.error('Błąd przy pobieraniu notatek:', error);
+
     return '';
   }
 };

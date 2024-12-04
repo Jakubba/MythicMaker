@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../AuthProvider';
 
-const AuthenticationGuard = ({ children }) => {
+interface AuthenticationGuardProps {
+  children: ReactNode;
+}
+
+const AuthenticationGuard: React.FC<AuthenticationGuardProps> = ({
+  children,
+}) => {
   const { currentUser } = useAuth();
   const location = useLocation();
 
@@ -10,7 +16,7 @@ const AuthenticationGuard = ({ children }) => {
     return <Navigate to="/character" replace />;
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 export default AuthenticationGuard;
