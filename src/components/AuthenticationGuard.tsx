@@ -16,7 +16,7 @@ const AuthenticationGuard: React.FC<AuthenticationGuardProps> = ({
     return <Navigate to="/character" replace />;
   }
 
-  return <>{children}</>;
+  return children;
 };
 
 export default AuthenticationGuard;

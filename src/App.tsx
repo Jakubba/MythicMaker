@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { AuthProvider } from './AuthProvider';
+import { Home } from './pages/Home/Home';
 import LoginForm from './pages/LoginForm/LoginPage';
 import Registration from './pages/Registration/RegisterPage';
 import CharacterPage from './pages/Character';
@@ -22,6 +23,14 @@ const App = () => {
           }
         />
         <Route
+          path="/"
+          element={
+            <AuthenticationGuard>
+              <Home />
+            </AuthenticationGuard>
+          }
+        />
+        <Route
           path="/registration"
           element={
             <AuthenticationGuard>
@@ -37,7 +46,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <ToastContainer
         position="top-right"

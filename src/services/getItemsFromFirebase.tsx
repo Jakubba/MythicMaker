@@ -1,8 +1,9 @@
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import { CategoryTypes } from '../types/CategoryTypes';
 
 export const getItemsFromFirebase = async (
-  category: string,
+  category: CategoryTypes,
   userId: string,
 ): Promise<any[]> => {
   try {

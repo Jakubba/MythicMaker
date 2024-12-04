@@ -2,10 +2,11 @@ import { db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { Item } from '../types/interface';
+import { CategoryTypes } from '../types/CategoryTypes';
 
 export const addItemToFirebase = async (
   item: Item,
-  category: string,
+  category: CategoryTypes,
 ): Promise<void> => {
   try {
     const auth = getAuth();
