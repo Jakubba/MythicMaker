@@ -114,13 +114,11 @@ const Character = () => {
   };
 
   const processValue = (name, value) => {
-    const includesKeywords = name.includes('level') || name.includes('health');
-    const containsStatName = stats.some((stat) => stat.name === name);
-
-    if (includesKeywords || containsStatName) {
-      return isNaN(value) ? 0 : +value;
+    const hasKeyword = name.includes('level') || name.includes('health');
+    const isStatName = stats.some((stat) => stat.name === name);
+    if (hasKeyword || isStatName) {
+      return isNaN(value) ? 0 : Number(value);
     }
-
     return value;
   };
 
