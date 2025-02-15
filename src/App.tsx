@@ -7,6 +7,7 @@ import Registration from './pages/Registration/RegisterPage';
 import CharacterPage from './pages/Character';
 import ProtectedRoute from './components/ProtectedRoute';
 import AuthenticationGuard from './components/AuthenticationGuard';
+import { FAQ } from './pages/FAQ';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -46,6 +47,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="/faq" element={<FAQ />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <ToastContainer

@@ -10,6 +10,7 @@ import bgRegistration from '../../assets/image/registration.png';
 import { createUser } from '../../services/createUser';
 import { getErrorMessage } from '../../helpers/errorMessages';
 import RegisterForm from './RegisterForm';
+import { Navbar } from '../../blocks/Navbar';
 
 const initialValues = {
   username: '',
@@ -47,12 +48,8 @@ const RegisterPage = () => {
   return (
     <AuthenticationGuard>
       <div className="relative flex flex-col items-center w-full h-screen">
-        <Link
-          className="absolute z-20 px-4 py-2 font-semibold text-gray-800 uppercase rounded-md top-5 left-5 bg-slate-200"
-          to="/login"
-        >
-          Wróć
-        </Link>
+        <Navbar />
+
         <main className="flex w-full min-h-[560px] h-[80vh] relative">
           <div className="absolute top-0 w-full h-[520px] bg-gradient-to-b from-gray-800/100 via-red-800/10 to-transparent z-10"></div>
           <img

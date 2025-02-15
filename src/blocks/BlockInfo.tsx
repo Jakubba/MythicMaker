@@ -8,11 +8,11 @@ export const BlockInfo = () => {
     <section className="relative flex flex-col items-center justify-center w-full p-4 bg-gray-800 h-max md:p-20">
       <div className="flex flex-col items-start justify-center mb-8">
         <span className="mb-2 text-sm font-semibold text-white">Funkcje</span>
-        <h2 className="mb-4 text-3xl font-bold text-white max-w-[500px]">
+        <h2 className="mb-4 text-3xl font-bold text-white max-w-[500px] font-primaryFont">
           Odkryj nasze niesomniety narzędzie, która ułatwia grę w Dungeons &
           Dragons
         </h2>
-        <p className="mb-4 text-base font-medium text-white">
+        <p className="mb-4 text-base font-medium text-white font-tertiaryFont">
           Nasze narzędzie oferuje wszystko, co potrzebne do stworzenia
           wyjątkowej postaci w Dungeons & Dragons. Od kreatora postaci po
           menedżera kampanii, mamy wszystko, co ułatwi Twoją grę.

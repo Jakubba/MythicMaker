@@ -3,9 +3,11 @@ import avatar from '../assets/image/avatar.png';
 
 export const Reviews = () => {
   return (
-    <section className="flex flex-col items-center justify-center w-full p-4 bg-gray-800 h-max">
-      <h2 className="mb-6 text-5xl font-bold text-white">Opinie Klientów</h2>
-      <p className="mb-16 text-base font-semibold text-white">
+    <section className="flex flex-col items-center justify-center w-full px-4 py-10 bg-gray-800 h-max">
+      <h2 className="mb-6 text-5xl font-bold text-white font-primaryFont">
+        Opinie Klientów
+      </h2>
+      <p className="mb-16 text-base font-semibold text-white uppercase font-tertiaryFont">
         To narzędzie zmieniło sposób, w jaki gram!
       </p>
       <ul className="flex flex-col items-stretch justify-center w-full h-full md:flex-row md:gap-8">

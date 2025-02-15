@@ -9,6 +9,7 @@ import InfoPage from '../../blocks/InfoPage';
 import Preloader from '../../components/Preloader';
 import { LoginFormBackground } from './LoginFormBackground';
 import { LoginForm } from './LoginForm';
+import { Navbar } from '../../blocks/Navbar';
 
 const initialValues = {
   username: '',
@@ -57,6 +58,7 @@ const LoginPage = () => {
           <Preloader />
         ) : (
           <>
+            <Navbar />
             <main className="flex w-full min-h-[560px] h-[80vh] relative">
               <LoginFormBackground />
               <section className="relative z-10 flex flex-col items-center justify-center w-auto m-auto rounded-md p-7 login-form customGlass">
