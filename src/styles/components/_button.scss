@@ -1,0 +1,55 @@
+.openbtn {
+  background: #10568f;
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.openbtn .openbtn-area {
+  transition: all 0.4s;
+}
+
+.openbtn span {
+  position: absolute;
+  background: #fff;
+  display: inline-block;
+  border-radius: 3px;
+  left: 13px;
+  height: 3px;
+  transition: all 0.4s;
+  width: 50%;
+  &:nth-of-type(1) {
+    top: 16px;
+  }
+  &:nth-of-type(2) {
+    top: 24px;
+  }
+  &:nth-of-type(3) {
+    top: 32px;
+  }
+}
+
+.openbtn.active .openbtn-area {
+  transform: rotatex(360deg);
+}
+
+.openbtn.active span {
+  &:nth-of-type(1) {
+    width: 45%;
+    top: 18px;
+    left: 14px;
+    transform: translateY(6px) rotate(-135deg);
+  }
+  &:nth-of-type(2) {
+    opacity: 0;
+  }
+  &:nth-of-type(3) {
+    width: 45%;
+    top: 30px;
+    left: 14px;
+    transform: translateY(-6px) rotate(135deg);
+  }
+}

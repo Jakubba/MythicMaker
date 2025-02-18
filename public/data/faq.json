@@ -1,0 +1,22 @@
+[
+  {
+    "title": "I. Jak mogę stworzyć własną postać?",
+    "desc": "Aby stworzyć własną postać, wystarczy kliknąć przycisk „Stwórz postać” w menu głównym. Następnie wypełnij formularz, podając imię, wygląd, cechy charakteru i inne szczegóły, które chcesz uwzględnić."
+  },
+  {
+    "title": "II.Czy mogę nadać mojej postaci dowolne imię?",
+    "desc": "Tak, możesz nadać swojej postaci dowolne imię, które Ci się podoba. Pamiętaj tylko, aby nie używać wulgarnych słów ani nazw naruszających zasady naszej społeczności."
+  },
+  {
+    "title": "III .Jakie cechy mogę wybrać dla mojej postaci?",
+    "desc": "Możesz wybrać takie cechy jak płeć, wiek, wygląd zewnętrzny (kolor skóry, włosów, oczu), osobowość (np. odważna, spokojna), umiejętności (np. walka, magia) oraz inne unikalne właściwości."
+  },
+  {
+    "title": "IV. Czy mogę zmienić wygląd postaci po jej utworzeniu?",
+    "desc": "Tak, możesz edytować wygląd swojej postaci w dowolnym momencie, korzystając z opcji „Edytuj postać”. Zmiany będą natychmiastowo widoczne w grze lub aplikacji."
+  },
+  {
+    "title": "V. Jakie umiejętności może posiadać moja postać?",
+    "desc": "Każda postać może posiadać różne umiejętności w zależności od wybranej roli (np. wojownik, mag, złodziej). Umiejętności obejmują m.in. walkę wręcz, magię, leczenie, zdolności detektywistyczne i wiele innych. Wybierz te, które najlepiej pasują do charakteru Twojej postaci."
+  }
+]

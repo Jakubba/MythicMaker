@@ -10,6 +10,7 @@ import Wizards from '../components/Wizards';
 import plus from './../assets/icons/icon-plus.png';
 import minus from './../assets/icons/icon-minus.png';
 import { stats, tabs } from './../constans/descCharakter';
+import characterImg from '../assets/image/mur2.jpeg';
 
 const Character = () => {
   const { logout, currentUser } = useAuth();
@@ -58,7 +59,6 @@ const Character = () => {
         }
       } catch (error) {
         console.error('Nie udało się załadować danych postaci:', error);
-        // alert('Nie udało się załadować danych postaci.');
       }
     };
 
@@ -114,13 +114,11 @@ const Character = () => {
   };
 
   const processValue = (name, value) => {
-    const includesKeywords = name.includes('level') || name.includes('health');
-    const containsStatName = stats.some((stat) => stat.name === name);
-
-    if (includesKeywords || containsStatName) {
-      return isNaN(value) ? 0 : +value;
+    const hasKeyword = name.includes('level') || name.includes('health');
+    const isStatName = stats.some((stat) => stat.name === name);
+    if (hasKeyword || isStatName) {
+      return isNaN(value) ? 0 : Number(value);
     }
-
     return value;
   };
 
@@ -179,8 +177,13 @@ const Character = () => {
   };
 
   return (
-    <div className="bg-cardGradient">
-      <div className="flex justify-end p-2">
+    <div className="relative bg-cardGradient">
+      <img
+        className="absolute top-0 left-0 z-0 object-cover w-full h-full opacity-70"
+        src={characterImg}
+        alt=""
+      />
+      <div className="relative z-10 flex justify-end p-2">
         <button
           onClick={handleLogout}
           className="px-4 py-2 font-bold text-gray-800 bg-white rounded hover:bg-gray-800 hover:text-white"
@@ -188,7 +191,7 @@ const Character = () => {
           Wyloguj
         </button>
       </div>
-      <div className="flex flex-col h-screen lg:flex-row max-w-[1600px] mx-auto">
+      <div className="flex flex-col h-screen lg:flex-row max-w-[1600px] mx-auto z-10 relative">
         <div className="flex flex-col w-full h-full p-4 lg:w-1/2">
           <h1 className="py-4 mb-5 text-3xl font-semibold text-center uppercase bg-gray-600 text-neutral-100 font-tertiaryFont">
             Witaj {currentUser?.email || 'graczu'}
@@ -253,7 +256,7 @@ const Character = () => {
                 name="description"
                 value={characterData.description}
                 onChange={handleInputChange}
-                className="w-full h-40 p-4 text-white bg-transparent bg-gray-600 border rounded resize-none border-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                className="w-full h-40 p-4 text-white bg-transparent bg-gray-600 border rounded resize-none border-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-500 placeholder:text-white"
                 placeholder="Opis postaci..."
               />
             ) : (
@@ -302,7 +305,9 @@ const Character = () => {
           <div className="flex flex-wrap">
             {tabs.slice(2).map((tab) => (
               <button
-                className="block px-4 py-2 text-white uppercase border border-gray-600 px-font-semibold bg-slate-500 hover:bg-slate-400 active:bg-slate-300"
+                className={`block px-4 py-2 text-white uppercase border border-gray-600 px-font-semibold 
+                ${activeTab === tab.id ? 'bg-yellow-600' : 'bg-slate-500'} 
+                hover:bg-slate-400 active:bg-slate-300`}
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
               >
@@ -319,7 +324,7 @@ const Character = () => {
                 name="notes"
                 value={characterData.notes}
                 onChange={handleInputChange}
-                className="w-full h-full p-2 mt-4 text-white bg-transparent bg-gray-600 resize-none min-h-40 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                className="w-full h-full p-2 mt-4 text-white bg-transparent bg-gray-600 resize-none min-h-40 focus:outline-none focus:ring-2 focus:ring-slate-500 placeholder:text-white"
                 placeholder="Notatki ..."
                 style={{ resize: 'none' }}
               />
@@ -330,21 +335,21 @@ const Character = () => {
                   name="skillsNotes"
                   value={characterData.skillsNotes}
                   onChange={handleInputChange}
-                  className="w-full h-40 p-2 mb-5 text-white bg-transparent bg-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-slate-500"
+                  className="w-full h-40 p-2 mb-5 text-white bg-transparent bg-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-slate-500 placeholder:text-white"
                   placeholder="Umiejętności"
                 />
                 <textarea
                   name="personalityTraits"
                   value={characterData.personalityTraits}
                   onChange={handleInputChange}
-                  className="w-full h-40 p-2 mb-5 text-white bg-transparent bg-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-slate-500"
+                  className="w-full h-40 p-2 mb-5 text-white bg-transparent bg-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-slate-500 placeholder:text-white"
                   placeholder="Cechy osobowości"
                 />
                 <textarea
                   name="weakness"
                   value={characterData.weakness}
                   onChange={handleInputChange}
-                  className="w-full h-40 p-2 mb-5 text-white bg-transparent bg-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-slate-500"
+                  className="w-full h-40 p-2 mb-5 text-white bg-transparent bg-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-slate-500 placeholder:text-white"
                   placeholder="Słabości"
                 />
               </div>
