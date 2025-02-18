@@ -1,5 +1,5 @@
 import { CategoryTypes } from '../types/CategoryTypes';
-import { db } from '../firebase';
+import { db } from './../firebase/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { arrayRemove } from 'firebase/firestore';

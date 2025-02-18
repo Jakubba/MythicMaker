@@ -32,7 +32,7 @@ export const Contact = () => {
         <div className="w-full h-full overflow-hidden rounded-lg md:h-screen max-h-[900px] md:block md:w-1/2 ">
           <img className="object-cover h-[100%]" src={contactImg} alt="" />
         </div>
-        <div className="z-20 flex flex-col flex-wrap w-full lg:p-10 lg:gap-10 md:w-1/2 md:flex-row">
+        <div className="z-20 flex flex-col flex-wrap items-center justify-center w-full lg:p-10 lg:gap-10 md:w-1/2 md:flex-row">
           <div className="w-full">
             <p className="mb-2 text-xl font-semibold text-white uppercase font-tertiaryFont">
               Kontakt
@@ -91,8 +91,8 @@ export const Contact = () => {
               onSubmit={handleSubmit}
             >
               {() => (
-                <Form>
-                  <div className="flex flex-col mb-4">
+                <Form className="flex flex-col m-auto w-max">
+                  <div className="flex flex-col items-start mb-4 w-max">
                     <label
                       htmlFor="name"
                       className="mb-2 text-white font-tertiaryFont"
@@ -106,7 +106,7 @@ export const Contact = () => {
                     />
                     <ErrorMessage name="name" component="div" />
                   </div>
-                  <div className="flex flex-col mb-4">
+                  <div className="flex flex-col items-start mb-4 w-max">
                     <label
                       htmlFor="email"
                       className="mb-2 text-white font-tertiaryFont"
@@ -120,7 +120,7 @@ export const Contact = () => {
                     />
                     <ErrorMessage name="email" component="div" />
                   </div>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col items-start w-max">
                     <label
                       htmlFor="message"
                       className="mb-2 text-white font-tertiaryFont"

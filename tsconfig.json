@@ -1,26 +1,19 @@
-// {
-//   "files": [],
-//   "references": [
-//     { "path": "./tsconfig.app.json" },
-//     { "path": "./tsconfig.node.json" }
-//   ]
-// }
 {
   "compilerOptions": {
-    "target": "es6", // Ustala wersję ECMAScript
-    "module": "esnext", // Typ modułu
-    "lib": ["dom", "dom.iterable", "esnext"], // Biblioteki do użycia
-    "allowJs": true, // Zezwala na JavaScript
-    "skipLibCheck": true, // Pomija sprawdzanie typów w plikach dtypów
-    "strict": true, // Włącza ścisłe sprawdzanie typów
-    "forceConsistentCasingInFileNames": true, // Wymusza spójną wielkość liter w nazwach plików
-    "noEmit": true, // Nie generuje plików wyjściowych
-    "esModuleInterop": true, // Umożliwia importy ES
-    "moduleResolution": "node", // Typ rozwiązywania modułów
-    "resolveJsonModule": true, // Umożliwia importy plików JSON
-    "isolatedModules": true, // Umożliwia użycie pojedynczych modułów
-    "jsx": "react" // Ustala typ
+    "target": "es6",
+    "module": "esnext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react"
   },
-  "include": ["src"], // Dołącz folder źródłowy
-  "exclude": ["node_modules", "dist"] // Wyklucz foldery
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

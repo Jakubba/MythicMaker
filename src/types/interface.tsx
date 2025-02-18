@@ -21,6 +21,7 @@ export interface ItemsSectionProps {
   itemsData: Item[];
   category: string;
 }
+
 export interface Characteristics {
   name?: string;
   race?: string;

@@ -1,4 +1,4 @@
-import { db } from '../firebase';
+import { db } from './../firebase/firebase';
 import { doc, getDoc, DocumentSnapshot } from 'firebase/firestore';
 
 interface NoteData {

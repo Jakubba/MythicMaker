@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './../AuthProvider';
-import { db, storage } from './../firebase';
+import { useAuth } from './../context/AuthProvider';
+import { db, storage } from './../firebase/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import Weapons from '../components/Weapons';

@@ -1,4 +1,4 @@
-import { db } from '../firebase';
+import { db } from './../firebase/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { Characteristics } from '../types/interface';
 

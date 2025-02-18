@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../../firebase';
+import { auth } from './../../firebase/firebase';
 import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { Formik, Form } from 'formik';
 import validationSchema from './schema';
