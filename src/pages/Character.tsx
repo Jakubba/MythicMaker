@@ -9,40 +9,20 @@ import Equipment from '../components/Equipment';
 import Wizards from '../components/Wizards';
 import plus from './../assets/icons/icon-plus.png';
 import minus from './../assets/icons/icon-minus.png';
-import { stats, tabs } from './../constans/descCharakter';
+import { stats, tabs, TabType, TabEnum } from './../constans/descCharakter';
 import characterImg from '../assets/image/mur2.jpeg';
+import { initialCharacterData, CharacterData } from './../constans/initialCharacterData';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Character = () => {
-  const { logout, currentUser } = useAuth();
   const navigate = useNavigate();
-
-  const [characterData, setCharacterData] = useState({
-    name: '',
-    race: '',
-    age: '',
-    class: '',
-    level: '',
-    description: '',
-    health: 0,
-    strength: 0,
-    dexterity: 0,
-    endurance: 0,
-    intelligence: 0,
-    wisdom: 0,
-    charisma: 0,
-    imageURL: '',
-    notes: '',
-    skillsNotes: '',
-    personalityTraits: '',
-    weakness: '',
-    weapons: [],
-    spells: [],
-    equipment: [],
-  });
-
-  const [activeTab, setActiveTab] = useState('description');
-  const [personalTab, setPersonalTab] = useState('description');
+  const { logout, currentUser } = useAuth();
+  const [characterData, setCharacterData] = useState<CharacterData>(initialCharacterData);
+  const [activeTab, setActiveTab] = useState<TabEnum>(TabEnum.DESCRIPTION);
+  const [personalTab, setPersonalTab] = useState<TabEnum>(TabEnum.DESCRIPTION);
   const [image, setImage] = useState(null);
+  const characterTabs: TabType[] = tabs.slice(2);
 
   useEffect(() => {
     const loadCharacterData = async () => {
@@ -54,11 +34,9 @@ const Character = () => {
         const docSnap = await getDoc(doc(db, 'users', currentUser.uid));
         if (docSnap.exists()) {
           setCharacterData(docSnap.data());
-        } else {
-          console.log('Brak danych postaci.');
         }
       } catch (error) {
-        console.error('Nie udało się załadować danych postaci:', error);
+        toast.error(`Nie udało się załadować danych postaci:${error.messege}`);
       }
     };
 
@@ -78,7 +56,7 @@ const Character = () => {
             await setDoc(docRef, characterData);
           }
         } catch (error) {
-          console.error('Failed to save character data:', error);
+          toast.error(`Failed to save character data:${error.messege}`);
         }
       }
     };
@@ -94,7 +72,7 @@ const Character = () => {
           const imageURL = await getDownloadURL(imageRef);
           setCharacterData((prevData) => ({ ...prevData, imageURL }));
         } catch (error) {
-          console.error('Failed to upload image:', error);
+          toast.error(`Failed to upload image:${error.messege}`);
         }
       }
     };
@@ -109,7 +87,7 @@ const Character = () => {
       logout();
       navigate('/login');
     } catch (error) {
-      alert('Failed to save character data before logout.');
+      toast.success('Failed to save character data before logout.');
     }
   };
 
@@ -139,19 +117,16 @@ const Character = () => {
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) {
-      console.error('No file selected.');
+      toast.error(`No file selected.`);
       return;
     }
 
     const storageRef = ref(storage, `images/${currentUser.uid}/${file.name}`);
-    console.log('Uploading file to:', storageRef.fullPath);
 
     try {
       await uploadBytes(storageRef, file);
-      console.log('File uploaded successfully.');
 
       const fileURL = await getDownloadURL(storageRef);
-      console.log('File URL:', fileURL);
 
       setCharacterData((prevData) => ({ ...prevData, imageURL: fileURL }));
 
@@ -159,14 +134,12 @@ const Character = () => {
         ...characterData,
         imageURL: fileURL,
       });
-
-      console.log('Dane zaktualizowane pomyślnie.');
     } catch (error) {
-      console.error('Error during file upload:', error);
+      toast.error(`Error during file upload:${error.messege}`);
       if (error.code === 'storage/unauthorized') {
-        alert('Nie masz uprawnień do przesyłania plików.');
+        toast.success('Nie masz uprawnień do przesyłania plików.');
       } else {
-        alert('Wystąpił błąd podczas przesyłania pliku.');
+        toast.success('Wystąpił błąd podczas przesyłania pliku.');
       }
     }
   };
@@ -179,56 +152,56 @@ const Character = () => {
   return (
     <div className="relative bg-cardGradient">
       <img
-        className="absolute top-0 left-0 z-0 object-cover w-full h-full opacity-70"
+        className="absolute left-0 top-0 z-0 h-full w-full object-cover opacity-70"
         src={characterImg}
         alt=""
       />
       <div className="relative z-10 flex justify-end p-2">
         <button
           onClick={handleLogout}
-          className="px-4 py-2 font-bold text-gray-800 bg-white rounded hover:bg-gray-800 hover:text-white"
+          className="rounded bg-white px-4 py-2 font-bold text-gray-800 hover:bg-gray-800 hover:text-white"
         >
           Wyloguj
         </button>
       </div>
-      <div className="flex flex-col h-screen lg:flex-row max-w-[1600px] mx-auto z-10 relative">
-        <div className="flex flex-col w-full h-full p-4 lg:w-1/2">
-          <h1 className="py-4 mb-5 text-3xl font-semibold text-center uppercase bg-gray-600 text-neutral-100 font-tertiaryFont">
+      <div className="relative z-10 mx-auto flex h-screen max-w-[1600px] flex-col lg:flex-row">
+        <div className="flex h-full w-full flex-col p-4 lg:w-1/2">
+          <h1 className="mb-5 bg-gray-600 py-4 text-center font-tertiaryFont text-3xl font-semibold uppercase text-neutral-100">
             Witaj {currentUser?.email || 'graczu'}
           </h1>
-          <div className="flex flex-wrap w-full mb-4">
-            <div className="relative w-1/2 aspect-square max-h-[380px]">
+          <div className="mb-4 flex w-full flex-wrap">
+            <div className="relative aspect-square max-h-[380px] w-1/2">
               {characterData.imageURL && (
                 <img
                   src={characterData.imageURL}
                   alt="Uploaded"
-                  className="absolute object-cover w-full h-full transform -translate-x-1/2 -translate-y-1/2 md:object-contain top-1/2 left-1/2 z-12"
+                  className="z-12 absolute left-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 transform object-cover md:object-contain"
                 />
               )}
               <input
-                className="absolute w-max p-2  bottom-[10px] right-[10px] z-20 opacity-0 cursor-pointer peer"
+                className="peer absolute bottom-[10px] right-[10px] z-20 w-max cursor-pointer p-2 opacity-0"
                 type="file"
                 id="fileInput"
                 onChange={handleImageUpload}
               />
               <label
                 htmlFor="fileInput"
-                className="absolute bottom-[10px] right-[10px] p-2 bg-gray-800  text-white cursor-pointer peer-hover:bg-gray-100 peer-hover:text-gray-600"
+                className="absolute bottom-[10px] right-[10px] cursor-pointer bg-gray-800 p-2 text-white peer-hover:bg-gray-100 peer-hover:text-gray-600"
               >
                 Obraz
               </label>
             </div>
-            <div className="justify-center w-1/2">
+            <div className="w-1/2 justify-center">
               <table className="w-full max-w-full">
                 <tbody>
                   {['name', 'race', 'age', 'class', 'level'].map((field) => (
                     <tr key={field} className="mb-6 rounded rounded-r-lg">
-                      <th className="px-4 py-2 text-xl text-left text-white capitalize bg-gray-600">
+                      <th className="bg-gray-600 px-4 py-2 text-left text-xl capitalize text-white">
                         {field}
                       </th>
-                      <td className="text-xl ">
+                      <td className="text-xl">
                         <input
-                          className="box-border w-full p-2 text-white bg-gray-600 border rounded-r-lg h-2-full border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                          className="h-2-full box-border w-full rounded-r-lg border border-slate-500 bg-gray-600 p-2 text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
                           type="text"
                           name={field}
                           value={characterData[field]}
@@ -242,11 +215,13 @@ const Character = () => {
             </div>
           </div>
           <div>
-            {tabs.slice(0, 2).map((tab) => (
+            {characterTabs.map((tab) => (
               <button
-                className="p-2 text-white bg-slate-600 hover:bg-slate-700 active:bg-slate-800"
+                className={`px-font-semibold block border border-gray-600 px-4 py-2 uppercase text-white ${
+                  activeTab === tab.id ? 'bg-yellow-600' : 'bg-slate-500'
+                } hover:bg-slate-400 active:bg-slate-300`}
                 key={tab.id}
-                onClick={() => setPersonalTab(tab.id)}
+                onClick={() => setActiveTab(tab.id)}
               >
                 {tab.label}
               </button>
@@ -256,40 +231,40 @@ const Character = () => {
                 name="description"
                 value={characterData.description}
                 onChange={handleInputChange}
-                className="w-full h-40 p-4 text-white bg-transparent bg-gray-600 border rounded resize-none border-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-500 placeholder:text-white"
+                className="h-40 w-full resize-none rounded border border-slate-600 bg-gray-600 bg-transparent p-4 text-white placeholder:text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
                 placeholder="Opis postaci..."
               />
             ) : (
-              <table className="w-full bg-slate-500 border-10">
+              <table className="border-10 w-full bg-slate-500">
                 <tbody>
                   {stats.map(({ name, label }) => (
-                    <tr className="flex items-center mt-2 mb-2" key={name}>
+                    <tr className="mb-2 mt-2 flex items-center" key={name}>
                       <th className="w-[150px] text-white">{label}</th>
                       <td className="flex w-[250px]">
                         <button
-                          className="w-[50px] h-[50px] opacity-50 hover:opacity-100"
+                          className="h-[50px] w-[50px] opacity-50 hover:opacity-100"
                           onClick={() => handleStatChange(name, -1)}
                         >
                           <img
                             src={minus}
-                            className="w-[100%] h-[100%] object-contain"
+                            className="h-[100%] w-[100%] object-contain"
                             alt="Decrease"
                           />
                         </button>
                         <input
-                          className="w-[80px] text-lg text-center bg-transparent text-white "
+                          className="w-[80px] bg-transparent text-center text-lg text-white"
                           type="text"
                           name={name}
                           value={displayInputValue(name)}
                           onChange={handleInputChange}
                         />
                         <button
-                          className="w-[50px] h-[50px] opacity-50 hover:opacity-100"
+                          className="h-[50px] w-[50px] opacity-50 hover:opacity-100"
                           onClick={() => handleStatChange(name, 1)}
                         >
                           <img
                             src={plus}
-                            className="w-[100%] h-[100%] object-contain"
+                            className="h-[100%] w-[100%] object-contain"
                             alt="Increase"
                           />
                         </button>
@@ -301,13 +276,11 @@ const Character = () => {
             )}
           </div>
         </div>
-        <div className="flex flex-col w-full h-full p-4 lg:w-1/2">
+        <div className="flex h-full w-full flex-col p-4 lg:w-1/2">
           <div className="flex flex-wrap">
             {tabs.slice(2).map((tab) => (
               <button
-                className={`block px-4 py-2 text-white uppercase border border-gray-600 px-font-semibold 
-                ${activeTab === tab.id ? 'bg-yellow-600' : 'bg-slate-500'} 
-                hover:bg-slate-400 active:bg-slate-300`}
+                className={`px-font-semibold block border border-gray-600 px-4 py-2 uppercase text-white ${activeTab === tab.id ? 'bg-yellow-600' : 'bg-slate-500'} hover:bg-slate-400 active:bg-slate-300`}
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
               >
@@ -324,7 +297,7 @@ const Character = () => {
                 name="notes"
                 value={characterData.notes}
                 onChange={handleInputChange}
-                className="w-full h-full p-2 mt-4 text-white bg-transparent bg-gray-600 resize-none min-h-40 focus:outline-none focus:ring-2 focus:ring-slate-500 placeholder:text-white"
+                className="mt-4 h-full min-h-40 w-full resize-none bg-gray-600 bg-transparent p-2 text-white placeholder:text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
                 placeholder="Notatki ..."
                 style={{ resize: 'none' }}
               />
@@ -335,21 +308,21 @@ const Character = () => {
                   name="skillsNotes"
                   value={characterData.skillsNotes}
                   onChange={handleInputChange}
-                  className="w-full h-40 p-2 mb-5 text-white bg-transparent bg-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-slate-500 placeholder:text-white"
+                  className="mb-5 h-40 w-full resize-none bg-gray-600 bg-transparent p-2 text-white placeholder:text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
                   placeholder="Umiejętności"
                 />
                 <textarea
                   name="personalityTraits"
                   value={characterData.personalityTraits}
                   onChange={handleInputChange}
-                  className="w-full h-40 p-2 mb-5 text-white bg-transparent bg-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-slate-500 placeholder:text-white"
+                  className="mb-5 h-40 w-full resize-none bg-gray-600 bg-transparent p-2 text-white placeholder:text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
                   placeholder="Cechy osobowości"
                 />
                 <textarea
                   name="weakness"
                   value={characterData.weakness}
                   onChange={handleInputChange}
-                  className="w-full h-40 p-2 mb-5 text-white bg-transparent bg-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-slate-500 placeholder:text-white"
+                  className="mb-5 h-40 w-full resize-none bg-gray-600 bg-transparent p-2 text-white placeholder:text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
                   placeholder="Słabości"
                 />
               </div>

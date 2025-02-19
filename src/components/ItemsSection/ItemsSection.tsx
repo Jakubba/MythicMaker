@@ -6,6 +6,8 @@ import ItemList from '../ItemList';
 import { getAuth } from 'firebase/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { Item, ItemsSectionProps } from '../../types/interface';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const DEFAULT_IMAGE = '/placeholder.jpg';
 const DEFAULT_STATS = { strength: 0, power: 0 };
@@ -34,7 +36,7 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
       setItems((prevItems) => [...prevItems, newItem]);
       setIsModalOpen(false);
     } catch (error) {
-      console.error('Error adding item:', error);
+      toast.error(`Error adding item: ${error.message}`);
     }
   };
 
@@ -43,7 +45,7 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
       await deleteItemFromFirebase(itemId, selectedCategory);
       setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
     } catch (error) {
-      console.error('Error removing item:', error);
+      toast.error(`Error removing item: ${error.message}`);
     }
   };
 
@@ -58,7 +60,7 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
         const userId = auth.currentUser?.uid;
 
         if (!userId) {
-          console.error('User not authenticated.');
+          toast.error(`User not authenticated.${error.message}`);
           return;
         }
 
@@ -68,7 +70,7 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
           setItems(fetchedItems);
         }
       } catch (error) {
-        console.error('Błąd przy ładowaniu przedmiotów:', error);
+        toast.error(`Błąd przy ładowaniu przedmiotów: ${error.message}`);
       }
     };
 
@@ -81,23 +83,23 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
     <section className="mt-2">
       <button
         onClick={() => setIsModalOpen(true)}
-        className="p-2 mb-4 font-semibold text-white uppercase bg-gray-800 hover:bg-gray-500"
+        className="mb-4 bg-gray-800 p-2 font-semibold uppercase text-white hover:bg-gray-500"
       >
         Dodaj przedmiot
       </button>
 
       <div>
-        <h3 className="p-2 text-xl font-semibold text-white bg-gray-500 w-max">{title}</h3>
+        <h3 className="w-max bg-gray-500 p-2 text-xl font-semibold text-white">{title}</h3>
         <ul className="mt-4">
           {!items?.length ? (
             <p>Brak przedmiotów w tej kategorii.</p>
           ) : (
             items.map((item) => (
-              <li key={item.id} className="flex items-center w-full p-3 mb-2 bg-gray-300">
+              <li key={item.id} className="mb-2 flex w-full items-center bg-gray-300 p-3">
                 <img
                   src={item.image || '/placeholder.jpg'}
                   alt={item.name || 'Nieznany przedmiot'}
-                  className="object-contain w-16 h-16 mx-4 mix-blend-multiply"
+                  className="mx-4 h-16 w-16 object-contain mix-blend-multiply"
                 />
                 <div className="flex flex-col">
                   <p className="text-xl font-medium">{item.name}</p>
@@ -106,7 +108,7 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
                 </div>
                 <button
                   onClick={() => handleRemoveItem(item.id)}
-                  className="block p-2 ml-auto text-white bg-gray-800 hover:bg-gray-600"
+                  className="ml-auto block bg-gray-800 p-2 text-white hover:bg-gray-600"
                 >
                   Usuń produkt
                 </button>

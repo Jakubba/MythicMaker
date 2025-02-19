@@ -1,5 +1,7 @@
 import { db } from './../firebase/firebase';
 import { doc, getDoc, DocumentSnapshot } from 'firebase/firestore';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface NoteData {
   content: string;
@@ -13,7 +15,7 @@ export const getNotesFromFirebase = async (): Promise<string> => {
 
     return docSnap.exists() ? (docSnap.data() as NoteData).content : '';
   } catch (error) {
-    console.error('Błąd przy pobieraniu notatek:', error);
+    toast.error(`Błąd przy pobieraniu notatek:${error.message}`);
 
     return '';
   }

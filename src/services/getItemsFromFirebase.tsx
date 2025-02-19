@@ -1,6 +1,8 @@
 import { db } from './../firebase/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { CategoryTypes } from '../types/CategoryTypes';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const getItemsFromFirebase = async (
   category: CategoryTypes,
@@ -11,19 +13,12 @@ export const getItemsFromFirebase = async (
       throw new Error('Category is not defined.');
     }
 
-    const categoryRef = collection(
-      db,
-      'users',
-      userId,
-      'categories',
-      category,
-      'products',
-    );
+    const categoryRef = collection(db, 'users', userId, 'categories', category, 'products');
 
     const snapshot = await getDocs(categoryRef);
 
     if (snapshot.empty) {
-      console.warn('Brak danych w kolekcji produktów.');
+      toast.warn('Brak danych w kolekcji produktów.');
       return [];
     }
 
@@ -37,7 +32,7 @@ export const getItemsFromFirebase = async (
 
     return items;
   } catch (error) {
-    console.error('Błąd przy pobieraniu przedmiotów:', error);
+    toast.error(`Błąd przy pobieraniu przedmiotów:${error.message}`);
     return [];
   }
 };

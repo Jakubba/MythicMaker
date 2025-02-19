@@ -3,11 +3,10 @@ import { collection, addDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { Item } from '../types/interface';
 import { CategoryTypes } from '../types/CategoryTypes';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-export const addItemToFirebase = async (
-  item: Item,
-  category: CategoryTypes,
-): Promise<void> => {
+export const addItemToFirebase = async (item: Item, category: CategoryTypes): Promise<void> => {
   try {
     const auth = getAuth();
     const currentUser = auth.currentUser;
@@ -22,22 +21,10 @@ export const addItemToFirebase = async (
       throw new Error('Category not provided');
     }
 
-    const categoryRef = collection(
-      db,
-      'users',
-      userId,
-      'categories',
-      category,
-      'products',
-    );
+    const categoryRef = collection(db, 'users', userId, 'categories', category, 'products');
 
     await addDoc(categoryRef, item);
-
-    console.log(
-      `Item added to category "${category}" for user ${userId}:`,
-      item,
-    );
   } catch (error) {
-    console.error('Error adding item to Firebase:', error);
+    toast.error(`Error adding item to Firebase: ${error.message}`);
   }
 };
