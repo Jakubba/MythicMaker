@@ -41,7 +41,6 @@ const LoginPage = () => {
       navigate('/character');
     } catch (error) {
       toast.error(`Logowanie nie powiodło się ${error.message}`);
-      toast.success('Logowanie nie powiodło się. Sprawdź swoje dane.');
     } finally {
       setLoading(false);
       setSubmitting(false);

@@ -7,7 +7,7 @@ import { Reviews } from '../../blocks/Reviews';
 import { Newsletter } from '../../blocks/Newsletter';
 import { Footer } from '../../blocks/Footer';
 import { ContentWithTwoImage } from '../../blocks/ContentWithTwoImage';
-import { Contact } from '../../blocks/Contact';
+import { Contact } from '../../blocks/Contact/Contact';
 import { GallerySlider } from '../../blocks/GallerySlider';
 import { Counter } from '../../blocks/Counter';
 export const Home = () => {

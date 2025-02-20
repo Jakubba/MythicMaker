@@ -92,7 +92,9 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
         <h3 className="w-max bg-gray-500 p-2 text-xl font-semibold text-white">{title}</h3>
         <ul className="mt-4">
           {!items?.length ? (
-            <p>Brak przedmiotów w tej kategorii.</p>
+            <p className="bg-zinc-200 text-center text-red-950">
+              Brak przedmiotów w tej kategorii.
+            </p>
           ) : (
             items.map((item) => (
               <li key={item.id} className="mb-2 flex w-full items-center bg-gray-300 p-3">

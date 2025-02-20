@@ -31,15 +31,6 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    toast.error('Error: useAuth must be used within an AuthProvider!', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      theme: 'dark',
-    });
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;

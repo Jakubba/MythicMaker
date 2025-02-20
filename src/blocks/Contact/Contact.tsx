@@ -1,20 +1,13 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import contactImg from '../assets/image/hero.png';
-import iconMail from './../assets/icons/icon-mail-white.svg';
-import iconPhone from './../assets/icons/icon-phone-white.svg';
-import iconLocation from './../assets/icons/icon-point-white.svg';
+import contactImg from '../../assets/image/hero.png';
+import iconMail from '../../assets/icons/icon-mail-white.svg';
+import iconPhone from '../../assets/icons/icon-phone-white.svg';
+import iconLocation from '../../assets/icons/icon-point-white.svg';
 import { toast } from 'react-toastify';
-export const Contact = () => {
-  const validationSchema = Yup.object({
-    name: Yup.string().min(2, 'Imię musi mieć co najmniej 2 znaki').required('Imię jest wymagane'),
-    email: Yup.string().email('Niepoprawny adres email').required('Email jest wymagany'),
-    message: Yup.string()
-      .min(10, 'Wiadomość musi mieć co najmniej 10 znaków')
-      .required('Wiadomość jest wymagana'),
-  });
+import { validationSchema } from './schema';
 
+export const Contact = () => {
   const handleSubmit = (values, { resetForm }) => {
     toast.success('Formularz został wysłany!');
     resetForm();
