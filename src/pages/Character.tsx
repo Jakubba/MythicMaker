@@ -36,7 +36,7 @@ const Character = () => {
           setCharacterData(docSnap.data());
         }
       } catch (error) {
-        toast.error(`Nie udało się załadować danych postaci:${error.messege}`);
+        toast.error(`Nie udało się załadować danych postaci:${error.message}`);
       }
     };
 
@@ -56,7 +56,7 @@ const Character = () => {
             await setDoc(docRef, characterData);
           }
         } catch (error) {
-          toast.error(`Failed to save character data:${error.messege}`);
+          toast.error(`Failed to save character data:${error.message}`);
         }
       }
     };
@@ -72,7 +72,7 @@ const Character = () => {
           const imageURL = await getDownloadURL(imageRef);
           setCharacterData((prevData) => ({ ...prevData, imageURL }));
         } catch (error) {
-          toast.error(`Failed to upload image:${error.messege}`);
+          toast.error(`Failed to upload image:${error.message}`);
         }
       }
     };
@@ -135,7 +135,7 @@ const Character = () => {
         imageURL: fileURL,
       });
     } catch (error) {
-      toast.error(`Error during file upload:${error.messege}`);
+      toast.error(`Error during file upload:${error.message}`);
       if (error.code === 'storage/unauthorized') {
         toast.success('Nie masz uprawnień do przesyłania plików.');
       } else {
