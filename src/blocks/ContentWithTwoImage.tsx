@@ -22,7 +22,7 @@ export const ContentWithTwoImage = () => {
             />
           </div>
         </div>
-        <div className="flex flex-col w-full md:items-start md:w-1/2 ">
+        <div className="flex flex-col w-full md:items-center md:w-1/2 ">
           <p className="text-lg text-[#ff0000] mb-4 uppercase font-tertiaryFont font-bold">
             Witaj w grze Mythic Maker
           </p>
