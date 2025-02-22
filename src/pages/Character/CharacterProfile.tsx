@@ -1,14 +1,20 @@
 import React from 'react';
-import { storage } from './../firebase/firebase';
+import { storage } from '../../firebase/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getAuth } from 'firebase/auth';
+import { v4 as uuidv4 } from 'uuid';
+import { CharacterProfileProps } from './Character.types';
 
 const auth = getAuth();
-const currentUser = auth.currentUser;
 
-export const CharacterProfile = ({ characterData, setCharacterData }) => {
+const CHARACTER_FIELDS = ['name', 'race', 'age', 'class', 'level'];
+
+export const CharacterProfile: React.FC<CharacterProfileProps> = ({
+  characterData,
+  setCharacterData,
+}) => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCharacterData((prevData) => ({ ...prevData, [name]: value }));
@@ -21,7 +27,15 @@ export const CharacterProfile = ({ characterData, setCharacterData }) => {
       return;
     }
 
-    const storageRef = ref(storage, `images/${file.name}`);
+    const user = auth.currentUser;
+    if (!user) {
+      toast.error('Musisz być zalogowany, aby przesyłać pliki.');
+      return;
+    }
+
+    // Tworzenie unikalnej nazwy pliku
+    const uniqueFileName = `${uuidv4()}_${file.name}`;
+    const storageRef = ref(storage, `images/${user.uid}/${uniqueFileName}`);
 
     try {
       await uploadBytes(storageRef, file);
@@ -32,7 +46,7 @@ export const CharacterProfile = ({ characterData, setCharacterData }) => {
       toast.success('Obraz przesłany pomyślnie!');
     } catch (error) {
       console.error('Upload error:', error);
-      toast.error(`Error during file upload: ${error.message}`);
+      toast.error(`Błąd przesyłania pliku: ${error.message}`);
     }
   };
 
@@ -62,7 +76,7 @@ export const CharacterProfile = ({ characterData, setCharacterData }) => {
       <div className="w-1/2 justify-center">
         <table className="w-full max-w-full">
           <tbody>
-            {['name', 'race', 'age', 'class', 'level'].map((field) => (
+            {CHARACTER_FIELDS.map((field) => (
               <tr key={field} className="mb-6 rounded rounded-r-lg">
                 <th className="bg-gray-600 px-4 py-2 text-left text-xl capitalize text-white">
                   {field}

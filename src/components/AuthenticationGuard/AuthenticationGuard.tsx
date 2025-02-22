@@ -1,14 +1,9 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthProvider';
+import { useAuth } from '../../context/AuthProvider';
+import { AuthenticationGuardProps } from './AuthenticationGuard.types';
 
-interface AuthenticationGuardProps {
-  children: ReactNode;
-}
-
-const AuthenticationGuard: React.FC<AuthenticationGuardProps> = ({
-  children,
-}) => {
+const AuthenticationGuard: React.FC<AuthenticationGuardProps> = ({ children }) => {
   const { currentUser } = useAuth();
   const location = useLocation();
 

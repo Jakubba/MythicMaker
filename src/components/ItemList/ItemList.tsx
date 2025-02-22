@@ -1,12 +1,7 @@
 import React from 'react';
-import { ItemListProps } from '../types/interface';
+import { ItemListProps } from '../../types/interface';
 
-const ItemList: React.FC<ItemListProps> = ({
-  isOpen,
-  onClose,
-  items,
-  onAddItem,
-}) => {
+const ItemList: React.FC<ItemListProps> = ({ isOpen, onClose, items, onAddItem }) => {
   if (!isOpen) return null;
 
   return (
@@ -15,46 +10,40 @@ const ItemList: React.FC<ItemListProps> = ({
       aria-modal="true"
       role="dialog"
     >
-      <div className="relative w-3/4 p-4 bg-white rounded shadow-lg max-h-[90vh] overflow-y-auto">
+      <div className="relative max-h-[90vh] w-3/4 overflow-y-auto rounded bg-white p-4 shadow-lg">
         <button
           onClick={onClose}
-          className="absolute p-2 text-white text-2xl bg-red-500 rounded-full top-2 right-2 w-[50px] h-[50px]"
+          className="absolute right-2 top-2 h-[50px] w-[50px] rounded-full bg-red-500 p-2 text-2xl text-white"
           aria-label="Zamknij okno"
         >
           X
         </button>
 
-        <h3 className="mb-4 text-xl font-bold text-gray-900">
-          Wybierz przedmiot do dodania
-        </h3>
+        <h3 className="mb-4 text-xl font-bold text-gray-900">Wybierz przedmiot do dodania</h3>
 
         <ul className="flex flex-wrap justify-start gap-4">
           {items.map((item) => (
             <li
               key={item.id}
-              className="relative w-full md:w-[calc(25%-1rem)] bg-gray-100 rounded-lg shadow-md p-4"
+              className="relative w-full rounded-lg bg-gray-100 p-4 shadow-md md:w-[calc(25%-1rem)]"
             >
               <img
                 src={item.image || '/placeholder.jpg'}
                 alt={item.name || 'Nieznany przedmiot'}
-                className="object-contain w-full h-[200px] mb-4 rounded"
+                className="mb-4 h-[200px] w-full rounded object-contain"
               />
 
               <div className="flex flex-col items-start">
                 <p className="text-sm font-semibold text-gray-700">
                   {item.name || 'Nieznany przedmiot'}
                 </p>
-                <p className="text-sm text-gray-700">
-                  Siła: {item.stats?.strength || 0}
-                </p>
-                <p className="text-sm text-gray-700">
-                  Moc: {item.stats?.power || 0}
-                </p>
+                <p className="text-sm text-gray-700">Siła: {item.stats?.strength || 0}</p>
+                <p className="text-sm text-gray-700">Moc: {item.stats?.power || 0}</p>
               </div>
 
               <button
                 onClick={() => onAddItem(item)}
-                className="w-full py-2 mt-4 text-white rounded bg-emerald-600 hover:bg-emerald-700"
+                className="mt-4 w-full rounded bg-emerald-600 py-2 text-white hover:bg-emerald-700"
                 aria-label={`Dodaj przedmiot ${item.name}`}
               >
                 + Dodaj

@@ -4,7 +4,7 @@ import { auth } from './../../firebase/firebase';
 import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { Formik } from 'formik';
 import validationSchema from './schema';
-import AuthenticationGuard from '../../components/AuthenticationGuard';
+import AuthenticationGuard from '../../components/AuthenticationGuard/AuthenticationGuard';
 import InfoPage from '../../blocks/InfoPage';
 import Preloader from '../../components/Preloader';
 import { LoginFormBackground } from './LoginFormBackground';

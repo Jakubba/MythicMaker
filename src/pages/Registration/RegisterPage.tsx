@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Formik } from 'formik';
 import { toast } from 'react-toastify';
 import validationSchema from '../Registration/schema';
-import AuthenticationGuard from '../../components/AuthenticationGuard';
+import AuthenticationGuard from '../../components/AuthenticationGuard/AuthenticationGuard';
 import InfoPage from '../../blocks/InfoPage';
 import bgRegistration from '../../assets/image/registration.png';
 import { createUser } from '../../services/createUser';

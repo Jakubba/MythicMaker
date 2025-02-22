@@ -2,9 +2,10 @@
 import React from 'react';
 import plus from './../assets/icons/icon-plus.png';
 import minus from './../assets/icons/icon-minus.png';
-import { stats, TabEnum } from './../constans/descCharakter';
+import { stats, TabEnum } from '../../constans/descCharakter';
+import { CharacterStatsProps } from './Character.types';
 
-export const CharacterStats = ({
+export const CharacterStats: React.FC<CharacterStatsProps> = ({
   activeTab,
   setActiveTab,
   characterTabs,

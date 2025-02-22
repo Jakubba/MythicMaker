@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './../blocks/Navbar';
-import { TitleBanner } from './../blocks/TitleBanner';
-import { Accordion } from './../blocks/Accordion';
+import { TitleBanner } from '../blocks/TitleBanner/TitleBanner';
+import { Accordion } from '../blocks/Accordion/Accordion';
 import faqImage from './../assets/image/faq.jpg';
 import { Footer } from '../blocks/Footer';
 

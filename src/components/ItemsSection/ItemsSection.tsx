@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { addItemToFirebase } from '../../services/addItemToFirebase';
 import { deleteItemFromFirebase } from '../../services/deleteItemFromFirebase';
 import { getItemsFromFirebase } from '../../services/getItemsFromFirebase';
-import ItemList from '../ItemList';
+import ItemList from '../ItemList/ItemList';
 import { getAuth } from 'firebase/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { Item, ItemsSectionProps } from '../../types/interface';

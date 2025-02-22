@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './../context/AuthProvider';
-import { db, storage } from './../firebase/firebase';
+import { useAuth } from '../../context/AuthProvider';
+import { db, storage } from '../../firebase/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-import plus from './../assets/icons/icon-plus.png';
-import minus from './../assets/icons/icon-minus.png';
-import { stats, tabs, TabType, TabEnum } from './../constans/descCharakter';
+import { stats, tabs, TabType, TabEnum } from '../../constans/descCharakter';
 import characterImg from '../assets/image/mur2.jpeg';
-import { initialCharacterData, CharacterData } from './../constans/initialCharacterData';
+import { initialCharacterData, CharacterData } from '../../constans/initialCharacterData';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { CharacterBackpack } from './CharacterBackpack';
@@ -20,7 +18,6 @@ const Character = () => {
   const { logout, currentUser } = useAuth();
   const [characterData, setCharacterData] = useState<CharacterData>(initialCharacterData);
   const [activeTab, setActiveTab] = useState<TabEnum>(TabEnum.DESCRIPTION);
-  const [personalTab, setPersonalTab] = useState<TabEnum>(TabEnum.DESCRIPTION);
   const [image, setImage] = useState(null);
   const characterTabs: TabType[] = tabs.slice(0, 2);
 
@@ -66,16 +63,17 @@ const Character = () => {
   useEffect(() => {
     const uploadImage = async () => {
       if (image) {
-        const imageRef = ref(storage, `images/${currentUser.uid}/${file.name}`);
+        const imageRef = ref(storage, `images/${currentUser.uid}/${image.name}`);
         try {
           await uploadBytes(imageRef, image);
           const imageURL = await getDownloadURL(imageRef);
           setCharacterData((prevData) => ({ ...prevData, imageURL }));
         } catch (error) {
-          toast.error(`Failed to upload image:${error.messege}`);
+          toast.error(`Failed to upload image: ${error.message}`);
         }
       }
     };
+
     uploadImage();
   }, [image, currentUser]);
 
@@ -91,7 +89,7 @@ const Character = () => {
     }
   };
 
-  const processValue = (name, value) => {
+  const processValue = (name: string, value: any) => {
     const hasKeyword = name.includes('level') || name.includes('health');
     const isStatName = stats.some((stat) => stat.name === name);
     if (hasKeyword || isStatName) {
@@ -107,7 +105,7 @@ const Character = () => {
     setCharacterData((prevData) => ({ ...prevData, [name]: newValue }));
   };
 
-  const handleStatChange = (stat, delta) => {
+  const handleStatChange = (stat: any, delta: number) => {
     setCharacterData((prevData) => ({
       ...prevData,
       [stat]: Math.max((prevData[stat] || 0) + delta, 0),
@@ -123,21 +121,21 @@ const Character = () => {
   return (
     <div className="relative bg-cardGradient">
       <img
-        className="absolute top-0 left-0 z-0 object-cover w-full h-full opacity-70"
+        className="absolute left-0 top-0 z-0 h-full w-full object-cover opacity-70"
         src={characterImg}
         alt=""
       />
       <div className="relative z-10 flex justify-end p-2">
         <button
           onClick={handleLogout}
-          className="px-4 py-2 font-bold text-gray-800 bg-white rounded hover:bg-gray-800 hover:text-white"
+          className="rounded bg-white px-4 py-2 font-bold text-gray-800 hover:bg-gray-800 hover:text-white"
         >
           Wyloguj
         </button>
       </div>
       <div className="relative z-10 mx-auto flex h-screen max-w-[1600px] flex-col lg:flex-row">
-        <div className="flex flex-col w-full h-full p-4 lg:w-1/2">
-          <h1 className="py-4 mb-5 text-3xl font-semibold text-center uppercase bg-gray-600 font-tertiaryFont text-neutral-100">
+        <div className="flex h-full w-full flex-col p-4 lg:w-1/2">
+          <h1 className="mb-5 bg-gray-600 py-4 text-center font-tertiaryFont text-3xl font-semibold uppercase text-neutral-100">
             Witaj {currentUser?.email || 'graczu'}
           </h1>
           <CharacterProfile characterData={characterData} setCharacterData={setCharacterData} />

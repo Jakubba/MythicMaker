@@ -1,6 +1,6 @@
 import { Form } from 'formik';
-import InputField from '../../components/InputField';
-import CheckField from '../../components/CheckField';
+import InputField from '../../components/Input/InputField';
+import CheckField from '../../components/CheckField/CheckField';
 
 const RegistrationForm = ({ loading, isSubmitting }) => (
   <Form className="flex w-full max-w-sm flex-col">
