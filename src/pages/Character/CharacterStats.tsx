@@ -1,7 +1,7 @@
 // CharacterTabs.js
 import React from 'react';
-import plus from './../assets/icons/icon-plus.png';
-import minus from './../assets/icons/icon-minus.png';
+import plus from './../../assets/icons/icon-plus.png';
+import minus from './../../assets/icons/icon-minus.png';
 import { stats, TabEnum } from '../../constans/descCharakter';
 import { CharacterStatsProps } from './Character.types';
 
@@ -32,14 +32,14 @@ export const CharacterStats: React.FC<CharacterStatsProps> = ({
           name="description"
           value={characterData.description}
           onChange={handleInputChange}
-          className="w-full h-40 p-4 text-white bg-gray-600 border rounded resize-none border-slate-600 placeholder:text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
+          className="h-40 w-full resize-none rounded border border-slate-600 bg-gray-600 p-4 text-white placeholder:text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
           placeholder="Opis postaci..."
         />
       ) : activeTab === TabEnum.STATS ? (
-        <table className="w-full border-10 bg-slate-500">
+        <table className="border-10 w-full bg-slate-500">
           <tbody>
             {stats.map(({ name, label }) => (
-              <tr className="flex items-center mt-2 mb-2" key={name}>
+              <tr className="mb-2 mt-2 flex items-center" key={name}>
                 <th className="w-[150px] text-white">{label}</th>
                 <td className="flex w-[250px]">
                   <button

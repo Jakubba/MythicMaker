@@ -15,7 +15,7 @@ export const FAQ = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(`${process.env.PUBLIC_URL}/data/faq.json`);
+      const response = await fetch(`${import.meta.env.BASE_URL}data/faq.json`);
       const data: FaqItem[] = await response.json();
       setFaqData(data);
     };

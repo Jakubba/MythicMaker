@@ -33,7 +33,7 @@ export const ContentWithTwoImage: React.FC<ContentWithTwoImageProps> = ({
             to="/registration"
             className="w-max border-2 border-transparent bg-thirdColor px-6 py-2 text-white transition-all hover:border-gray-800 hover:bg-white hover:text-gray-800"
           >
-            Zapisz się
+            Zarejestruj się
           </Link>
         </div>
       </div>

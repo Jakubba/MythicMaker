@@ -10,6 +10,7 @@ import { ContentWithTwoImage } from '../../blocks/ContentWithTwoImage/ContentWit
 import { Contact } from '../../blocks/Contact/Contact';
 import { GallerySlider } from '../../blocks/GallerySlider';
 import { Counter } from '../../blocks/Counter/Counter';
+import { StepBySteps } from '../../blocks/StepBySteps/StepBySteps';
 
 import heroImage from '../../assets/image/hero.png';
 import book from '../../assets/image/mainbook.png';
@@ -36,6 +37,7 @@ export const Home = () => {
         description="Nasze narzędzie sprawia,áncheza postacią jest proste i intuicyjne. Dzięki zaawansowanym funkcjom, możesz skupą się na przygodzie, a nie na liczbach."
         img={castle}
       />
+      <StepBySteps />
       <ContentWithTwoImage
         mainTitle="Witaj w grze Mythic Maker"
         title="Najlepszy narzędzie do tworzenia postaci i kampanii"

@@ -5,7 +5,7 @@ import { db, storage } from '../../firebase/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { stats, tabs, TabType, TabEnum } from '../../constans/descCharakter';
-import characterImg from '../assets/image/mur2.jpeg';
+import characterImg from './../../assets/image/mur2.jpeg';
 import { initialCharacterData, CharacterData } from '../../constans/initialCharacterData';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

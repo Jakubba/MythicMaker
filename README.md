@@ -13,7 +13,7 @@ The website also provides a view of the character's current equipment, allowing 
 ## ⚙️ Tech Stack
 
 🔹 **Frontend**: React, TypeScript, TailwindCSS, SASS, CSS  
-🔹 **Backend**: Firebase (authentication, database)
+🔹 **Backend**: Firebase (authentication, database), Web3Forms
 
 ## 🖥️ System Requirements
 

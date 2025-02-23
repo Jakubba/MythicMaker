@@ -3,7 +3,7 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import { Home } from '../pages/Home/Home';
 import LoginForm from '../pages/LoginForm/LoginPage';
 import Registration from '../pages/Registration/RegisterPage';
-import CharacterPage from '../pages/Character';
+import CharacterPage from '../pages/Character/Character';
 import ProtectedRoute from '../components/ProtectedRoute';
 import AuthenticationGuard from '../components/AuthenticationGuard/AuthenticationGuard';
 import { FAQ } from '../pages/FAQ';

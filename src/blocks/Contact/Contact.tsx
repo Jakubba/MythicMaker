@@ -8,13 +8,40 @@ import { toast } from 'react-toastify';
 import { validationSchema } from './schema';
 
 export const Contact = () => {
-  const handleSubmit = (values, { resetForm }) => {
-    toast.success('Formularz został wysłany!');
-    resetForm();
+  const accessKey = import.meta.env.VITE_WEB3FORM_ACCESS_KEY;
+  const handleSubmit = async (values, { resetForm }) => {
+    const formData = new FormData();
+
+    Object.keys(values).forEach((key) => {
+      formData.append(key, values[key]);
+    });
+
+    formData.append('access_key', accessKey);
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success('Formularz został wysłany!');
+        resetForm();
+      } else {
+        toast.error('Wystąpił błąd podczas wysyłania formularza.');
+      }
+    } catch (error) {
+      toast.error('Błąd połączenia. Spróbuj ponownie później.');
+    }
   };
 
   return (
-    <section className="relative flex h-auto w-full flex-col items-center justify-center gap-2 bg-slate-600 px-4 py-12">
+    <section
+      className="relative flex h-auto w-full flex-col items-center justify-center gap-2 bg-slate-600 px-4 py-12"
+      id="contact"
+    >
       <div className="absolute left-0 top-0 z-10 h-[520px] w-full bg-gradient-to-b from-gray-800/100 via-red-800/10 to-transparent"></div>
       <div className="flex h-auto w-full max-w-[1600px] flex-col justify-center gap-2 bg-slate-600 px-4 py-12 md:flex-row md:items-center md:gap-10">
         <div className="h-full max-h-[900px] w-full overflow-hidden rounded-lg md:block md:h-screen md:w-1/2">
