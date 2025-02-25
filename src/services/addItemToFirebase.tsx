@@ -25,6 +25,8 @@ export const addItemToFirebase = async (item: Item, category: CategoryTypes): Pr
 
     await addDoc(categoryRef, item);
   } catch (error) {
-    toast.error(`Error adding item to Firebase: ${error.message}`);
+    if (error instanceof Error) {
+      toast.error(`Error adding item to Firebase: ${error.message}`);
+    }
   }
 };

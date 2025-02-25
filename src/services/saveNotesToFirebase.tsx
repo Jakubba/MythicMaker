@@ -17,7 +17,9 @@ export const saveNotesToFirebase = async (notes: string): Promise<string | undef
 
     return docSnap.exists() ? (docSnap.data() as NoteData).content : '';
   } catch (error) {
-    toast.error(`Błąd przy zapisywaniu notatek:${error.message}`);
-    return undefined;
+    if (error instanceof Error) {
+      toast.error(`Błąd przy zapisywaniu notatek:${error.message}`);
+      return undefined;
+    }
   }
 };

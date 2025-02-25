@@ -37,7 +37,9 @@ export const Contact = () => {
         toast.error('Wystąpił błąd podczas wysyłania formularza.');
       }
     } catch (error) {
-      toast.error('Błąd połączenia. Spróbuj ponownie później.');
+      if (error instanceof Error) {
+        toast.error('Błąd połączenia. Spróbuj ponownie później.');
+      }
     }
   };
 

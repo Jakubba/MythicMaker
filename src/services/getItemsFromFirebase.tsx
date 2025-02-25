@@ -32,7 +32,9 @@ export const getItemsFromFirebase = async (
 
     return items;
   } catch (error) {
-    toast.error(`Błąd przy pobieraniu przedmiotów:${error.message}`);
-    return [];
+    if (error instanceof Error) {
+      toast.error(`Błąd przy pobieraniu przedmiotów:${error.message}`);
+      return [];
+    }
   }
 };

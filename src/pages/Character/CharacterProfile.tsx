@@ -45,8 +45,9 @@ export const CharacterProfile: React.FC<CharacterProfileProps> = ({
 
       toast.success('Obraz przesłany pomyślnie!');
     } catch (error) {
-      console.error('Upload error:', error);
-      toast.error(`Błąd przesyłania pliku: ${error.message}`);
+      if (error instanceof Error) {
+        toast.error(`Błąd przesyłania pliku: ${error.message}`);
+      }
     }
   };
 

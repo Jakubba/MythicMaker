@@ -49,7 +49,9 @@ const LoginPage = () => {
       const userCredential = await signInWithEmailAndPassword(auth, username, password);
       navigate('/character');
     } catch (error) {
-      toast.error(`Logowanie nie powiodło się: ${(error as Error).message}`);
+      if (error instanceof Error) {
+        toast.error(`Logowanie nie powiodło się: ${(error as Error).message}`);
+      }
     } finally {
       setLoading(false);
       setSubmitting(false);

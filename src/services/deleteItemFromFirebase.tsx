@@ -19,7 +19,9 @@ export const deleteItemFromFirebase = async (category: CategoryTypes, item: Item
       [category]: arrayRemove(item),
     });
   } catch (error) {
-    toast.error(`Error removing item from Firebase:${error.message}`);
-    throw error;
+    if (error instanceof Error) {
+      toast.error(`Error removing item from Firebase:${error.message}`);
+      throw error;
+    }
   }
 };

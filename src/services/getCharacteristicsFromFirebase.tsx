@@ -42,7 +42,9 @@ export const getCharacteristicsFromFirebase = async (userId: string): Promise<Ch
       return defaultCharacteristics;
     }
   } catch (error) {
-    toast.error(`Error fetching user characteristics:${error.message}`);
-    return defaultCharacteristics;
+    if (error instanceof Error) {
+      toast.error(`Error fetching user characteristics:${error.message}`);
+      return defaultCharacteristics;
+    }
   }
 };

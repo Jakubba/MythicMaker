@@ -15,8 +15,10 @@ export const getNotesFromFirebase = async (): Promise<string> => {
 
     return docSnap.exists() ? (docSnap.data() as NoteData).content : '';
   } catch (error) {
-    toast.error(`Błąd przy pobieraniu notatek:${error.message}`);
+    if (error instanceof Error) {
+      toast.error(`Błąd przy pobieraniu notatek:${error.message}`);
 
-    return '';
+      return '';
+    }
   }
 };

@@ -36,7 +36,9 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
       setItems((prevItems) => [...prevItems, newItem]);
       setIsModalOpen(false);
     } catch (error) {
-      toast.error(`Error adding item: ${error.message}`);
+      if (error instanceof Error) {
+        toast.error(`Error adding item: ${error.message}`);
+      }
     }
   };
 
@@ -45,7 +47,9 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
       await deleteItemFromFirebase(itemId, selectedCategory);
       setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
     } catch (error) {
-      toast.error(`Error removing item: ${error.message}`);
+      if (error instanceof Error) {
+        toast.error(`Error removing item: ${error.message}`);
+      }
     }
   };
 
@@ -70,7 +74,9 @@ const ItemsSection = ({ title, itemsData, category }: ItemsSectionProps) => {
           setItems(fetchedItems);
         }
       } catch (error) {
-        toast.error(`Błąd przy ładowaniu przedmiotów: ${error.message}`);
+        if (error instanceof Error) {
+          toast.error(`Błąd przy ładowaniu przedmiotów: ${error.message}`);
+        }
       }
     };
 

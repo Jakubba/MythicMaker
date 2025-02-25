@@ -21,7 +21,9 @@ export const Newsletter: React.FC<NewsletterProps> = ({ title, description, img 
       setEmail('');
       toast.success('Dziękujemy za zapis!');
     } catch (error) {
-      toast.error(`Błąd zapisu e-maila: ${(error as Error).message}`);
+      if (error instanceof Error) {
+        toast.error(`Błąd zapisu e-maila: ${(error as Error).message}`);
+      }
     }
   };
 

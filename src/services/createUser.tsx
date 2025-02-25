@@ -5,7 +5,11 @@ import { CreateUserParams } from '../types/interface';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export const createUser = async ({ email, password, profile }: CreateUserParams) => {
+export const createUser = async ({
+  email,
+  password,
+  profile: { ...profile },
+}: CreateUserParams) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;

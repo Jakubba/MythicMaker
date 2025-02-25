@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik } from 'formik';
 import { toast } from 'react-toastify';
@@ -22,11 +22,11 @@ const RegisterPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values: typeof initialValues) => {
     const { username, password } = values;
     setLoading(true);
     try {
-      const user = await createUser({ email: username, password });
+      const user = await createUser({ email: username, password: password, profile: {} });
 
       if (user) {
         toast.success('Konto zostało pomyślnie utworzone!');
@@ -35,9 +35,10 @@ const RegisterPage = () => {
         toast.error('Nie udało się utworzyć użytkownika. Spróbuj ponownie.');
       }
     } catch (error) {
-      toast.error(`Kod błędu podczas rejestracji:${error.code}`);
-      const errorMessage = getErrorMessage(error.code) || 'Wystąpił błąd. Spróbuj ponownie.';
-      toast.error(errorMessage);
+      if (error instanceof Error) {
+        const errorMessage = getErrorMessage(error.message) || 'Wystąpił błąd. Spróbuj ponownie.';
+        toast.error(errorMessage);
+      }
     } finally {
       setLoading(false);
     }

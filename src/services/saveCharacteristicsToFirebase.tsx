@@ -17,6 +17,8 @@ export const saveCharacteristicsToFirebase = async (
 
     await setDoc(docRef, { characteristics }, { merge: true });
   } catch (error) {
-    toast.error(`Błąd przy zapisywaniu cech postaci:${error.message}`);
+    if (error instanceof Error) {
+      toast.error(`Błąd przy zapisywaniu cech postaci:${error.message}`);
+    }
   }
 };
