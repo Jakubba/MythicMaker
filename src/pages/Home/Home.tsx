@@ -19,6 +19,13 @@ import loginImg from '../../assets/image/login.png';
 import newsletterImg from '../../assets/image/registration.png';
 
 export const Home = () => {
+  const counterData = [
+    { number: 10, title: 'Raz na dzień', description: 'Liczba postaci' },
+    { number: 56, title: 'Raz na tydzień', description: 'Liczba postaci' },
+    { number: 30, title: 'Raz na miesiąc', description: 'Liczba postaci' },
+    { number: 150, title: 'Raz na rok', description: 'Liczba postaci' },
+  ];
+
   return (
     <>
       <Navbar />
@@ -34,14 +41,14 @@ export const Home = () => {
       <BlockInfo />
       <BlockWithImage
         title="Odkryj, jak nasze narzędzie ułatwia zarządzanie postacią i kampanią."
-        description="Nasze narzędzie sprawia,áncheza postacią jest proste i intuicyjne. Dzięki zaawansowanym funkcjom, możesz skupą się na przygodzie, a nie na liczbach."
+        description="Nasze narzędzie sprawia, że zarządzanie postacią jest proste i intuicyjne. Dzięki zaawansowanym funkcjom, możesz skupić się na przygodzie, a nie na liczbach."
         img={castle}
       />
       <StepBySteps />
       <ContentWithTwoImage
         mainTitle="Witaj w grze Mythic Maker"
-        title="Najlepszy narzędzie do tworzenia postaci i kampanii"
-        description="Otwórz oczy i skup się na przygodzie i nie na liczbach. Pochłoń się całkowicie w grze"
+        title="Najlepsze narzędzie do tworzenia postaci i kampanii"
+        description="Otwórz oczy i skup się na przygodzie, a nie na liczbach. Pochłoń się całkowicie w grze."
         img={loginImg}
       />
       <Reviews />
@@ -50,20 +57,7 @@ export const Home = () => {
         description="Bądź na bieżąco z nowościami i aktualizacjami dla graczy i Mistrzów Gry."
         img={newsletterImg}
       />
-      <Counter
-        number1={10}
-        number2={56}
-        number3={30}
-        number4={150}
-        title1="Raz na dzień"
-        title2="Raz na tydzień"
-        title3="Raz na miesiac"
-        title4="Raz na rok"
-        description1="Liczba postaci"
-        description2="Liczba postaci"
-        description3="Liczba postaci"
-        description4="Liczba postaci"
-      />
+      <Counter data={counterData} />
       <Contact />
       <GallerySlider />
       <Footer />

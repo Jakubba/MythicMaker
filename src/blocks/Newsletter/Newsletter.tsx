@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { db } from '../../firebase/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import { NewsletterProps } from './Newsletter.types';
@@ -8,7 +8,7 @@ export const Newsletter: React.FC<NewsletterProps> = ({ title, description, img 
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!email) {
@@ -19,9 +19,9 @@ export const Newsletter: React.FC<NewsletterProps> = ({ title, description, img 
     try {
       await addDoc(collection(db, 'subscribe-email'), { email });
       setEmail('');
-      toast.success('Dziekujemy za zapis!');
+      toast.success('Dziękujemy za zapis!');
     } catch (error) {
-      toast.error(`Błąd zapisu e-maila:${error.message}`);
+      toast.error(`Błąd zapisu e-maila: ${(error as Error).message}`);
     }
   };
 

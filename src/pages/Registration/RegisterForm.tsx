@@ -1,8 +1,14 @@
+import React from 'react';
 import { Form } from 'formik';
 import InputField from '../../components/Input/InputField';
 import CheckField from '../../components/CheckField/CheckField';
 
-const RegistrationForm = ({ loading, isSubmitting }) => (
+type RegistrationFormProps = {
+  loading: boolean;
+  isSubmitting: boolean;
+};
+
+const RegistrationForm: React.FC<RegistrationFormProps> = ({ loading, isSubmitting }) => (
   <Form className="flex w-full max-w-sm flex-col">
     <div className="mb-5">
       <InputField type="email" id="username" name="username" placeholder="E-mail" />

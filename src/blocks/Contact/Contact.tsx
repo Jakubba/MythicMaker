@@ -9,7 +9,11 @@ import { validationSchema } from './schema';
 
 export const Contact = () => {
   const accessKey = import.meta.env.VITE_WEB3FORM_ACCESS_KEY;
-  const handleSubmit = async (values, { resetForm }) => {
+  interface FormValues {
+    [key: string]: string;
+  }
+
+  const handleSubmit = async (values: FormValues, { resetForm }: { resetForm: () => void }) => {
     const formData = new FormData();
 
     Object.keys(values).forEach((key) => {

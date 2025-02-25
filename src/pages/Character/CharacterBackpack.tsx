@@ -11,7 +11,7 @@ export const CharacterBackpack = () => {
   const [characterData, setCharacterData] = useState<CharacterData>(initialCharacterData);
   const [activeTab, setActiveTab] = useState<TabEnum>(TabEnum.DESCRIPTION);
 
-  const processValue = (name: string, value: any) => {
+  const processValue = (name: string, value: number) => {
     const hasKeyword = IMPORTANT_KEYS.some((key) => name.includes(key));
     const isStatName = stats.some((stat) => stat.name === name);
     if (hasKeyword || isStatName) {
@@ -28,7 +28,7 @@ export const CharacterBackpack = () => {
   };
 
   return (
-    <div className="flex h-full w-full flex-col p-4 lg:w-1/2">
+    <div className="flex flex-col w-full h-full p-4 lg:w-1/2">
       <div className="flex flex-wrap">
         {tabs.slice(2).map((tab) => (
           <button
@@ -53,7 +53,7 @@ export const CharacterBackpack = () => {
             name="notes"
             value={characterData.notes}
             onChange={handleInputChange}
-            className="mt-4 h-full min-h-40 w-full resize-none bg-gray-600 p-2 text-white placeholder:text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
+            className="w-full h-full p-2 mt-4 text-white bg-gray-600 resize-none min-h-40 placeholder:text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
             placeholder="Notatki ..."
             style={{ resize: 'none' }}
           />
@@ -64,21 +64,21 @@ export const CharacterBackpack = () => {
               name="skillsNotes"
               value={characterData.skillsNotes}
               onChange={handleInputChange}
-              className="mb-5 h-40 w-full resize-none bg-gray-600 p-2 text-white placeholder:text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
+              className="w-full h-40 p-2 mb-5 text-white bg-gray-600 resize-none placeholder:text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
               placeholder="Umiejętności"
             />
             <textarea
               name="personalityTraits"
               value={characterData.personalityTraits}
               onChange={handleInputChange}
-              className="mb-5 h-40 w-full resize-none bg-gray-600 p-2 text-white placeholder:text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
+              className="w-full h-40 p-2 mb-5 text-white bg-gray-600 resize-none placeholder:text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
               placeholder="Cechy osobowości"
             />
             <textarea
               name="weakness"
               value={characterData.weakness}
               onChange={handleInputChange}
-              className="mb-5 h-40 w-full resize-none bg-gray-600 p-2 text-white placeholder:text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
+              className="w-full h-40 p-2 mb-5 text-white bg-gray-600 resize-none placeholder:text-white focus:outline-none focus:ring-2 focus:ring-slate-500"
               placeholder="Słabości"
             />
           </div>

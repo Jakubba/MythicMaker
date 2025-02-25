@@ -18,6 +18,11 @@ const initialValues = {
   notRobot: false,
 };
 
+interface LoginValues {
+  username: string;
+  password: string;
+}
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -33,14 +38,18 @@ const LoginPage = () => {
     return unsubscribe;
   }, [navigate]);
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (
+    values: LoginValues,
+    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
+  ) => {
     const { username, password } = values;
     setLoading(true);
+
     try {
       const userCredential = await signInWithEmailAndPassword(auth, username, password);
       navigate('/character');
     } catch (error) {
-      toast.error(`Logowanie nie powiodło się ${error.message}`);
+      toast.error(`Logowanie nie powiodło się: ${(error as Error).message}`);
     } finally {
       setLoading(false);
       setSubmitting(false);

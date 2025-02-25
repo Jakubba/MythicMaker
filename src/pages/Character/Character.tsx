@@ -13,47 +13,43 @@ import { CharacterBackpack } from './CharacterBackpack';
 import { CharacterProfile } from './CharacterProfile';
 import { CharacterStats } from './CharacterStats';
 
-const Character = () => {
+const Character: React.FC = () => {
   const navigate = useNavigate();
   const { logout, currentUser } = useAuth();
   const [characterData, setCharacterData] = useState<CharacterData>(initialCharacterData);
   const [activeTab, setActiveTab] = useState<TabEnum>(TabEnum.DESCRIPTION);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState<File | null>(null);
   const characterTabs: TabType[] = tabs.slice(0, 2);
 
   useEffect(() => {
     const loadCharacterData = async () => {
-      if (!currentUser) {
-        return;
-      }
-
+      if (!currentUser) return;
       try {
         const docSnap = await getDoc(doc(db, 'users', currentUser.uid));
         if (docSnap.exists()) {
-          setCharacterData(docSnap.data());
+          setCharacterData(docSnap.data() as CharacterData);
         }
-      } catch (error) {
-        toast.error(`Nie udało się załadować danych postaci:${error.messege}`);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          toast.error(`Nie udało się załadować danych postaci: ${error.message}`);
+        }
       }
     };
-
     loadCharacterData();
   }, [currentUser]);
 
   useEffect(() => {
     const saveCharacterData = async () => {
-      if (currentUser) {
-        try {
-          const docRef = doc(db, 'users', currentUser.uid);
-          const docSnap = await getDoc(docRef);
-          if (
-            !docSnap.exists() ||
-            JSON.stringify(docSnap.data()) !== JSON.stringify(characterData)
-          ) {
-            await setDoc(docRef, characterData);
-          }
-        } catch (error) {
-          toast.error(`Failed to save character data:${error.messege}`);
+      if (!currentUser) return;
+      try {
+        const docRef = doc(db, 'users', currentUser.uid);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists() || JSON.stringify(docSnap.data()) !== JSON.stringify(characterData)) {
+          await setDoc(docRef, characterData);
+        }
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          toast.error(`Failed to save character data: ${error.message}`);
         }
       }
     };
@@ -62,18 +58,19 @@ const Character = () => {
 
   useEffect(() => {
     const uploadImage = async () => {
-      if (image) {
+      if (image && currentUser) {
         const imageRef = ref(storage, `images/${currentUser.uid}/${image.name}`);
         try {
           await uploadBytes(imageRef, image);
           const imageURL = await getDownloadURL(imageRef);
           setCharacterData((prevData) => ({ ...prevData, imageURL }));
-        } catch (error) {
-          toast.error(`Failed to upload image: ${error.message}`);
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            toast.error(`Failed to upload image: ${error.message}`);
+          }
         }
       }
     };
-
     uploadImage();
   }, [image, currentUser]);
 
@@ -85,11 +82,11 @@ const Character = () => {
       logout();
       navigate('/login');
     } catch (error) {
-      toast.success('Failed to save character data before logout.');
+      toast.error('Failed to save character data before logout.');
     }
   };
 
-  const processValue = (name: string, value: any) => {
+  const processValue = (name: string, value: number) => {
     const hasKeyword = name.includes('level') || name.includes('health');
     const isStatName = stats.some((stat) => stat.name === name);
     if (hasKeyword || isStatName) {
@@ -98,24 +95,22 @@ const Character = () => {
     return value;
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const newValue = processValue(name, value);
-
+    const newValue = processValue(name, Number(value));
     setCharacterData((prevData) => ({ ...prevData, [name]: newValue }));
   };
 
-  const handleStatChange = (stat: any, delta: number) => {
+  const handleStatChange = (statName: string, delta: number) => {
     setCharacterData((prevData) => ({
       ...prevData,
-      [stat]: Math.max((prevData[stat] || 0) + delta, 0),
+      [statName]: Math.max(((prevData[statName] as number) || 0) + delta, 0),
     }));
   };
 
-  const displayInputValue = (name: string): number | string => {
-    const value = characterData[name as keyof typeof characterData];
-
-    return isNaN(Number(value)) ? 0 : value;
+  const displayInputValue = (name: keyof CharacterData): number | string => {
+    const value = characterData[name];
+    return value !== undefined ? value : 0;
   };
 
   return (

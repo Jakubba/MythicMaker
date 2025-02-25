@@ -1,8 +1,27 @@
 import React, { useState } from 'react';
 import iconPlus from '../../assets/icons/icon-plus-white.svg';
 import iconMinus from '../../assets/icons/icon-minus-white.svg';
-import { AccordionProps } from './Accordion.types';
 import clsx from 'clsx';
+
+type AccordionProps = {
+  title: string;
+  desc: string;
+};
+type IconProps = {
+  src: string;
+  alt: string;
+  isVisible: boolean;
+};
+const Icon: React.FC<IconProps> = ({ src, alt, isVisible }) => (
+  <img
+    src={src}
+    alt={alt}
+    className={clsx(
+      'absolute right-0 ml-2 h-[45px] w-[45px] opacity-0 transition-all duration-300 ease-in-out',
+      { 'opacity-100': isVisible },
+    )}
+  />
+);
 
 export const Accordion: React.FC<AccordionProps> = ({ title, desc }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,22 +33,11 @@ export const Accordion: React.FC<AccordionProps> = ({ title, desc }) => {
         onClick={() => setIsOpen(!isOpen)}
       >
         {title}
-        <img
-          src={iconPlus}
-          alt="icon plus"
-          className={clsx(
-            'absolute right-0 ml-2 h-[45px] w-[45px] opacity-0 transition-all duration-300 ease-in-out',
-            { 'opacity-100': !isOpen },
-          )}
-        ></img>
-        <img
-          src={iconMinus}
-          alt="icon minus"
-          className={clsx(
-            'absolute right-0 ml-2 h-[45px] w-[45px] opacity-0 transition-all duration-300 ease-in-out',
-            isOpen && 'opacity-100',
-          )}
-        ></img>
+        <Icon
+          src={isOpen ? iconMinus : iconPlus}
+          alt={isOpen ? 'icon minus' : 'icon plus'}
+          isVisible={true}
+        />
       </button>
       <div
         className={clsx(

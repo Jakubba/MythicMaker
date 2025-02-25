@@ -1,4 +1,3 @@
-// CharacterTabs.js
 import React from 'react';
 import plus from './../../assets/icons/icon-plus.png';
 import minus from './../../assets/icons/icon-minus.png';

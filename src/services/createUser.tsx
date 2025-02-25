@@ -22,7 +22,7 @@ export const createUser = async ({ email, password, profile }: CreateUserParams)
     await setDoc(doc(db, 'users', user.uid), userData);
 
     return user;
-  } catch (error) {
+  } catch (error: string | any) {
     toast.error(`Error creating user:${error.message}`);
     throw error;
   }
