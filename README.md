@@ -10,6 +10,8 @@ Users can edit their character's stats, such as health points, strength, dexteri
 
 The website also provides a view of the character's current equipment, allowing for better character management.
 
+🔹 **Live version**: https://dist-bfrk6a680-jacobs-projects-c8df4d82.vercel.app/
+
 ## ⚙️ Tech Stack
 
 🔹 **Frontend**: React, TypeScript, TailwindCSS, SASS, CSS  

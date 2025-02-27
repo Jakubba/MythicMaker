@@ -2,13 +2,11 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { User, onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './../firebase/firebase';
 
-// Definiujemy typy dla kontekstu autoryzacji
 interface AuthContextType {
   currentUser: User | null;
   logout: () => Promise<void>;
 }
 
-// Tworzymy kontekst z domyślną wartością `undefined`
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
