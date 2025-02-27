@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../../firebase';
+import { auth } from './../../firebase/firebase';
 import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
-import { Formik, Form } from 'formik';
+import { Formik } from 'formik';
 import validationSchema from './schema';
-import AuthenticationGuard from '../../components/AuthenticationGuard';
+import AuthenticationGuard from '../../components/AuthenticationGuard/AuthenticationGuard';
 import InfoPage from '../../blocks/InfoPage';
 import Preloader from '../../components/Preloader';
 import { LoginFormBackground } from './LoginFormBackground';
 import { LoginForm } from './LoginForm';
 import { Navbar } from '../../blocks/Navbar';
+import { toast } from 'react-toastify';
 
 const initialValues = {
   username: '',
   password: '',
   notRobot: false,
 };
+
+interface LoginValues {
+  username: string;
+  password: string;
+}
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -32,19 +38,20 @@ const LoginPage = () => {
     return unsubscribe;
   }, [navigate]);
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (
+    values: LoginValues,
+    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
+  ) => {
     const { username, password } = values;
     setLoading(true);
+
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        username,
-        password,
-      );
+      const userCredential = await signInWithEmailAndPassword(auth, username, password);
       navigate('/character');
     } catch (error) {
-      console.error('Logowanie nie powiodło się', error);
-      alert('Logowanie nie powiodło się. Sprawdź swoje dane.');
+      if (error instanceof Error) {
+        toast.error(`Logowanie nie powiodło się: ${(error as Error).message}`);
+      }
     } finally {
       setLoading(false);
       setSubmitting(false);
@@ -53,16 +60,16 @@ const LoginPage = () => {
 
   return (
     <AuthenticationGuard>
-      <div className="flex flex-col items-center w-full h-screen bg-gray-800">
+      <div className="flex h-screen w-full flex-col items-center bg-gray-800">
         {loading ? (
           <Preloader />
         ) : (
           <>
             <Navbar />
-            <main className="flex w-full min-h-[560px] h-[80vh] relative">
+            <main className="relative flex h-[80vh] min-h-[560px] w-full">
               <LoginFormBackground />
-              <section className="relative z-10 flex flex-col items-center justify-center w-auto m-auto rounded-md p-7 login-form customGlass">
-                <h2 className="mb-4 text-3xl font-bold text-center text-white font-tertiaryFont">
+              <section className="login-form customGlass relative z-10 m-auto flex w-auto flex-col items-center justify-center rounded-md p-7">
+                <h2 className="mb-4 text-center font-tertiaryFont text-3xl font-bold text-white">
                   Logowanie
                 </h2>
                 <Formik

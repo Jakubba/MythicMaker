@@ -1,6 +1,8 @@
-# MythicMaker
+# 🔥🔥🔥🔥 MythicMaker 🔥🔥🔥🔥
 
-## Description
+<img src="./website.png" style="height:400px">
+
+### Description
 
 MythicMaker is a website designed for RPG (role-playing game) enthusiasts who enjoy creating characters. The site allows users to create accounts where they can design and manage their characters. Each character profile includes detailed information such as name, race, biography, appearance, and a picture (uploaded by the user or selected from a database).
 
@@ -8,38 +10,75 @@ Users can edit their character's stats, such as health points, strength, dexteri
 
 The website also provides a view of the character's current equipment, allowing for better character management.
 
-## How install on your computer:
+## ⚙️ Tech Stack
 
-1. Download the entire project/package:
+🔹 **Frontend**: React, TypeScript, TailwindCSS, SASS, CSS  
+🔹 **Backend**: Firebase (authentication, database), Web3Forms
 
-   - Obtain the project files from the source (e.g., GitHub, email, shared link).
-   - Download the ZIP or clone the repository if it's hosted online (e.g., GitHub): + To clone: Open your terminal and run:
+## 🖥️ System Requirements
 
-   ```bash
-      git clone https://github.com/Jakubba/MythicMaker
-      cd mythicmaker
-   ```
+✅ **Node.js** (version 16+ recommended)  
+✅ **npm** (version 8+ recommended) or **Yarn**  
+✅ **Git** (optional, for cloning the repository)
 
-   - Alternatively, if you download it as a ZIP, extract the contents to a directory of your choice.
-     2.Open the project on your computer:
+## 📥 Installation
 
-   * Navigate to the folder where the project is located. You can use a code editor like VSCode, Sublime Text, or WebStorm. + If using VSCode:
-     -Right-click on the project folder and select Open with Code or launch VSCode and open the project using the File > Open Folder menu.
-     3.Open the terminal and install the required packages:
-   * Open the terminal in your code editor or directly from your computer. If you're using VSCode, you can press Ctrl + ` to open the terminal within the editor.
-   * Navigate to the project directory if not already there:
-     cd /path/to/your/project
-   * Run the following command to install all necessary packages using yarn:
-     ```bash
-      yarn install
-     ```
+### Download the Project
 
-2. Run/Play the project:
-   - After the installation is complete, you can start or "play" the project by running:
-     yarn start or yarn dev
-
-If you don't have yarn installed yet, you can install it using npm (which comes with Node.js):
+🔹 Clone the repository:
 
 ```bash
-   npm install --global yarn
+git clone https://github.com/Jakubba/MythicMaker
+cd mythicmaker
 ```
+
+🔹 Alternatively, download the ZIP file, extract it, and open the project folder.
+
+### Open the Project
+
+Use a code editor like VSCode, Sublime Text, or WebStorm.
+
+🔹 In VSCode:
+
+    Right-click the project folder and select "Open with Code", or
+    Open VSCode and use File > Open Folder.
+
+### Open the Project
+
+If using Yarn:
+
+```
+  yarn install
+```
+
+Or if using npm:
+
+```
+  npm install
+```
+
+### Open the Project
+
+To start the application, run one of the following commands:
+
+For Yarn:
+
+```
+  yarn dev
+```
+
+For npm:
+
+```
+  npm run dev
+```
+
+### Now you can start using MythicMaker and bring your RPG characters to life! 🎲
+
+## 📜 License
+
+This project is licensed under the MIT License.
+
+## 🎭 Author
+
+Jacob B

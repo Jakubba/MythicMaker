@@ -1,6 +1,8 @@
-import { db } from '../firebase';
+import { db } from './../firebase/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { Characteristics } from '../types/interface';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const saveCharacteristicsToFirebase = async (
   userId: string,
@@ -11,15 +13,12 @@ export const saveCharacteristicsToFirebase = async (
       throw new Error('User ID is required');
     }
 
-    console.log('Preparing to save data for user ID:', userId);
-    console.log('Characteristics:', characteristics);
-
     const docRef = doc(db, 'users', userId);
 
     await setDoc(docRef, { characteristics }, { merge: true });
-
-    console.log('Cechy postaci zapisane pomyślnie.');
   } catch (error) {
-    console.error('Błąd przy zapisywaniu cech postaci:', error);
+    if (error instanceof Error) {
+      toast.error(`Błąd przy zapisywaniu cech postaci:${error.message}`);
+    }
   }
 };

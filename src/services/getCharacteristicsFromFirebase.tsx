@@ -1,10 +1,10 @@
-import { db } from '../firebase';
+import { db } from './../firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { Characteristics } from '../types/interface';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-export const getCharacteristicsFromFirebase = async (
-  userId: string,
-): Promise<Characteristics> => {
+export const getCharacteristicsFromFirebase = async (userId: string): Promise<Characteristics> => {
   const defaultCharacteristics: Characteristics = {
     age: 0,
     charisma: 0,
@@ -38,11 +38,13 @@ export const getCharacteristicsFromFirebase = async (
       const data = docSnap.data();
       return { ...defaultCharacteristics, ...data } as Characteristics;
     } else {
-      console.warn(`Document for userId: ${userId} does not exist.`);
+      toast.warn(`Document for userId: ${userId} does not exist.`);
       return defaultCharacteristics;
     }
   } catch (error) {
-    console.error('Error fetching user characteristics:', error);
-    return defaultCharacteristics;
+    if (error instanceof Error) {
+      toast.error(`Error fetching user characteristics:${error.message}`);
+      return defaultCharacteristics;
+    }
   }
 };

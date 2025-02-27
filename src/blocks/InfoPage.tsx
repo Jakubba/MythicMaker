@@ -1,5 +1,5 @@
 import React from 'react';
-import FeatureCard from '../components/FieldCard';
+import FeatureCard from '../components/FieldCard/FieldCard';
 import icon1 from '../assets/icons/icon-1.png';
 import icon2 from '../assets/icons/icon-2.png';
 import icon3 from '../assets/icons/icon-3.png';

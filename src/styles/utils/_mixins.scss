@@ -1,19 +1,16 @@
-//Mixin for responsive text
 @mixin responsive-text($font-size, $breakpoint) {
   font-size: $font-size;
 
   @media (max-width: $breakpoint) {
-    font-size: ($font-size * 0.8); // Zmniejsza rozmiar czcionki o 20%
+    font-size: ($font-size * 0.8);
   }
 }
-//Mixin for responsive media query
 @mixin media-query($breakpoint) {
   @media (max-width: $breakpoint) {
     @content;
   }
 }
 
-//Mixin center element
 @mixin center {
   display: flex;
   justify-content: center;
