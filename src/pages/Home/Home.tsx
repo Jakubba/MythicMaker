@@ -20,10 +20,10 @@ import newsletterImg from '../../assets/image/registration.png';
 
 export const Home = () => {
   const counterData = [
-    { number: 10, title: 'Raz na dzień', description: 'Liczba postaci' },
-    { number: 56, title: 'Raz na tydzień', description: 'Liczba postaci' },
-    { number: 30, title: 'Raz na miesiąc', description: 'Liczba postaci' },
-    { number: 150, title: 'Raz na rok', description: 'Liczba postaci' },
+    { number: 10, title: 'Użytkownicy', description: 'Łączna liczba użytkowników' },
+    { number: 5, title: 'Posty', description: 'Łączna liczba postów' },
+    { number: 20, title: 'Komentarze', description: 'Łączna liczba komentarzy' },
+    { number: 50, title: 'Reakcje', description: 'Łączna liczba reakcji' },
   ];
 
   return (
